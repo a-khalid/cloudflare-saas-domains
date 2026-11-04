@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Tests\Fixtures\Merchant;
+use AKhalid\CloudflareSaasDomains\Tests\TestCase;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Facades\Http;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Tests\Fixtures\Merchant;
-use YourVendor\CloudflareSaasDomains\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
 

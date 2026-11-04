@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Testing;
+namespace AKhalid\CloudflareSaasDomains\Testing;
 
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Data\CustomHostname;
+use AKhalid\CloudflareSaasDomains\Data\CustomHostnamePage;
+use AKhalid\CloudflareSaasDomains\Data\FallbackOrigin;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Enums\FallbackOriginStatus;
+use AKhalid\CloudflareSaasDomains\Enums\HostnameStatus;
+use AKhalid\CloudflareSaasDomains\Enums\SslStatus;
+use AKhalid\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
 use Illuminate\Support\Str;
 use PHPUnit\Framework\Assert;
 use Throwable;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Data\CustomHostname;
-use YourVendor\CloudflareSaasDomains\Data\CustomHostnamePage;
-use YourVendor\CloudflareSaasDomains\Data\FallbackOrigin;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
-use YourVendor\CloudflareSaasDomains\Enums\FallbackOriginStatus;
-use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
-use YourVendor\CloudflareSaasDomains\Enums\SslStatus;
-use YourVendor\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
 
 /**
  * An in-memory Cloudflare zone. It speaks the same payload shape as the API and

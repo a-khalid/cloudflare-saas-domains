@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Resolution;
+namespace AKhalid\CloudflareSaasDomains\Resolution;
 
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
 use Illuminate\Database\Eloquent\Model;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
 
 /** The tenant for the current request. Bound as scoped, so it resets between Octane requests. */
 final class CurrentTenant

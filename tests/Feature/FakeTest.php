@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Enums\FallbackOriginStatus;
+use AKhalid\CloudflareSaasDomains\Enums\HostnameStatus;
+use AKhalid\CloudflareSaasDomains\Enums\SslStatus;
+use AKhalid\CloudflareSaasDomains\Events\DomainAdded;
+use AKhalid\CloudflareSaasDomains\Events\DomainFailed;
+use AKhalid\CloudflareSaasDomains\Events\DomainRemoved;
+use AKhalid\CloudflareSaasDomains\Events\DomainVerified;
+use AKhalid\CloudflareSaasDomains\Events\SslActivated;
+use AKhalid\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\RateLimitedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
+use AKhalid\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
+use AKhalid\CloudflareSaasDomains\Testing\FakeCustomHostnameClient;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\ExpectationFailedException;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
-use YourVendor\CloudflareSaasDomains\Enums\FallbackOriginStatus;
-use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
-use YourVendor\CloudflareSaasDomains\Enums\SslStatus;
-use YourVendor\CloudflareSaasDomains\Events\DomainAdded;
-use YourVendor\CloudflareSaasDomains\Events\DomainFailed;
-use YourVendor\CloudflareSaasDomains\Events\DomainRemoved;
-use YourVendor\CloudflareSaasDomains\Events\DomainVerified;
-use YourVendor\CloudflareSaasDomains\Events\SslActivated;
-use YourVendor\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\RateLimitedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
-use YourVendor\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
-use YourVendor\CloudflareSaasDomains\Testing\FakeCustomHostnameClient;
 
 it('replaces the real client and never touches the network', function () {
     Http::fake();

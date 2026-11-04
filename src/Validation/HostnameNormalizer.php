@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Validation;
+namespace AKhalid\CloudflareSaasDomains\Validation;
 
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
 
 /**
  * Turns user input into the one form that is stored and sent to Cloudflare:

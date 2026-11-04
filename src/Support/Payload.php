@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Support;
+namespace AKhalid\CloudflareSaasDomains\Support;
 
 /**
  * Typed reads from decoded JSON. Cloudflare leaves fields out freely, so absent

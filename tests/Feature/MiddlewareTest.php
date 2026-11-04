@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
+use AKhalid\CloudflareSaasDomains\Http\Middleware\ResolveTenantByHostname;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Resolution\CurrentTenant;
+use AKhalid\CloudflareSaasDomains\Resolution\TenantResolver;
+use AKhalid\CloudflareSaasDomains\Tests\Fixtures\Merchant;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Sleep;
-use YourVendor\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
-use YourVendor\CloudflareSaasDomains\Http\Middleware\ResolveTenantByHostname;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Resolution\CurrentTenant;
-use YourVendor\CloudflareSaasDomains\Resolution\TenantResolver;
-use YourVendor\CloudflareSaasDomains\Tests\Fixtures\Merchant;
 
 beforeEach(function () {
     Sleep::fake();

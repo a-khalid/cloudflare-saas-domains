@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Actions;
+namespace AKhalid\CloudflareSaasDomains\Actions;
 
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Data\CustomHostname;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Enums\HostnameStatus;
+use AKhalid\CloudflareSaasDomains\Events\DomainAdded;
+use AKhalid\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\CloudflareSaasDomainsException;
+use AKhalid\CloudflareSaasDomains\Exceptions\DomainAlreadyClaimedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidTenantException;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Support\DomainStateTransitioner;
+use AKhalid\CloudflareSaasDomains\Validation\HostnameValidator;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Carbon;
 use Throwable;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Data\CustomHostname;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
-use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
-use YourVendor\CloudflareSaasDomains\Events\DomainAdded;
-use YourVendor\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\CloudflareSaasDomainsException;
-use YourVendor\CloudflareSaasDomains\Exceptions\DomainAlreadyClaimedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidTenantException;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Support\DomainStateTransitioner;
-use YourVendor\CloudflareSaasDomains\Validation\HostnameValidator;
 
 final class AddDomain
 {

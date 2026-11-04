@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Jobs;
+namespace AKhalid\CloudflareSaasDomains\Jobs;
 
+use AKhalid\CloudflareSaasDomains\Support\DomainSynchronizer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use YourVendor\CloudflareSaasDomains\Support\DomainSynchronizer;
 
 final class SyncDomainsJob implements ShouldBeUnique, ShouldQueue
 {

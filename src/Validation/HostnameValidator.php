@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Validation;
+namespace AKhalid\CloudflareSaasDomains\Validation;
 
-use YourVendor\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
 
 final class HostnameValidator
 {

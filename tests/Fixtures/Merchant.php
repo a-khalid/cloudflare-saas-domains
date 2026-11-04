@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Tests\Fixtures;
+namespace AKhalid\CloudflareSaasDomains\Tests\Fixtures;
 
+use AKhalid\CloudflareSaasDomains\Concerns\HasCustomDomains;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use YourVendor\CloudflareSaasDomains\Concerns\HasCustomDomains;
 
 class Merchant extends Model
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Tenancy;
+namespace AKhalid\CloudflareSaasDomains\Tenancy;
 
 use Illuminate\Database\Eloquent\Model;
 use Stancl\Tenancy\Contracts\Tenant;

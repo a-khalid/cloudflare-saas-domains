@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Events\DomainAdded;
+use AKhalid\CloudflareSaasDomains\Events\DomainFailed;
+use AKhalid\CloudflareSaasDomains\Events\DomainRemoved;
+use AKhalid\CloudflareSaasDomains\Events\DomainVerified;
+use AKhalid\CloudflareSaasDomains\Events\SslActivated;
+use AKhalid\CloudflareSaasDomains\Exceptions\DomainNotProvisionedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ServerErrorException;
+use AKhalid\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
-use YourVendor\CloudflareSaasDomains\Events\DomainAdded;
-use YourVendor\CloudflareSaasDomains\Events\DomainFailed;
-use YourVendor\CloudflareSaasDomains\Events\DomainRemoved;
-use YourVendor\CloudflareSaasDomains\Events\DomainVerified;
-use YourVendor\CloudflareSaasDomains\Events\SslActivated;
-use YourVendor\CloudflareSaasDomains\Exceptions\DomainNotProvisionedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ServerErrorException;
-use YourVendor\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
 
 beforeEach(function () {
     Sleep::fake();

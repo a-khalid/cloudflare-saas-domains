@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use YourVendor\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
-use YourVendor\CloudflareSaasDomains\Validation\HostnameNormalizer;
-use YourVendor\CloudflareSaasDomains\Validation\HostnameValidator;
+use AKhalid\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
+use AKhalid\CloudflareSaasDomains\Validation\HostnameNormalizer;
+use AKhalid\CloudflareSaasDomains\Validation\HostnameValidator;
 
 it('normalizes case, whitespace and the trailing dot', function (string $input, string $expected) {
     expect(HostnameNormalizer::normalize($input))->toBe($expected);

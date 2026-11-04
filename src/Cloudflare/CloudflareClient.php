@@ -2,31 +2,31 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Cloudflare;
+namespace AKhalid\CloudflareSaasDomains\Cloudflare;
 
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Data\ApiError;
+use AKhalid\CloudflareSaasDomains\Data\CustomHostname;
+use AKhalid\CloudflareSaasDomains\Data\CustomHostnamePage;
+use AKhalid\CloudflareSaasDomains\Data\FallbackOrigin;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\CloudflareApiException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ConnectionFailedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidRequestException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidResponseException;
+use AKhalid\CloudflareSaasDomains\Exceptions\MissingConfigurationException;
+use AKhalid\CloudflareSaasDomains\Exceptions\PermissionDeniedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\RateLimitedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ServerErrorException;
+use AKhalid\CloudflareSaasDomains\Support\Payload;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Sleep;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Data\ApiError;
-use YourVendor\CloudflareSaasDomains\Data\CustomHostname;
-use YourVendor\CloudflareSaasDomains\Data\CustomHostnamePage;
-use YourVendor\CloudflareSaasDomains\Data\FallbackOrigin;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
-use YourVendor\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\CloudflareApiException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ConnectionFailedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidRequestException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidResponseException;
-use YourVendor\CloudflareSaasDomains\Exceptions\MissingConfigurationException;
-use YourVendor\CloudflareSaasDomains\Exceptions\PermissionDeniedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\RateLimitedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ServerErrorException;
-use YourVendor\CloudflareSaasDomains\Support\Payload;
 
 final class CloudflareClient implements CustomHostnameClient
 {

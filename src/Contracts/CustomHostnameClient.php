@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Contracts;
+namespace AKhalid\CloudflareSaasDomains\Contracts;
 
-use YourVendor\CloudflareSaasDomains\Data\CustomHostname;
-use YourVendor\CloudflareSaasDomains\Data\CustomHostnamePage;
-use YourVendor\CloudflareSaasDomains\Data\FallbackOrigin;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Data\CustomHostname;
+use AKhalid\CloudflareSaasDomains\Data\CustomHostnamePage;
+use AKhalid\CloudflareSaasDomains\Data\FallbackOrigin;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
 
 interface CustomHostnameClient
 {

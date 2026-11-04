@@ -2,8 +2,22 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains;
+namespace AKhalid\CloudflareSaasDomains;
 
+use AKhalid\CloudflareSaasDomains\Cloudflare\ClientOptions;
+use AKhalid\CloudflareSaasDomains\Cloudflare\CloudflareClient;
+use AKhalid\CloudflareSaasDomains\Console\SyncDomainsCommand;
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Http\Middleware\ResolveTenantByHostname;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Observers\TenantDomainObserver;
+use AKhalid\CloudflareSaasDomains\Resolution\CurrentTenant;
+use AKhalid\CloudflareSaasDomains\Resolution\TenantResolver;
+use AKhalid\CloudflareSaasDomains\Support\Payload;
+use AKhalid\CloudflareSaasDomains\Tenancy\NullTenantInitializer;
+use AKhalid\CloudflareSaasDomains\Tenancy\StanclTenantInitializer;
+use AKhalid\CloudflareSaasDomains\Tenancy\TenantInitializer;
+use AKhalid\CloudflareSaasDomains\Validation\HostnameValidator;
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Container\Container;
@@ -11,20 +25,6 @@ use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Stancl\Tenancy\Tenancy;
-use YourVendor\CloudflareSaasDomains\Cloudflare\ClientOptions;
-use YourVendor\CloudflareSaasDomains\Cloudflare\CloudflareClient;
-use YourVendor\CloudflareSaasDomains\Console\SyncDomainsCommand;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Http\Middleware\ResolveTenantByHostname;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Observers\TenantDomainObserver;
-use YourVendor\CloudflareSaasDomains\Resolution\CurrentTenant;
-use YourVendor\CloudflareSaasDomains\Resolution\TenantResolver;
-use YourVendor\CloudflareSaasDomains\Support\Payload;
-use YourVendor\CloudflareSaasDomains\Tenancy\NullTenantInitializer;
-use YourVendor\CloudflareSaasDomains\Tenancy\StanclTenantInitializer;
-use YourVendor\CloudflareSaasDomains\Tenancy\TenantInitializer;
-use YourVendor\CloudflareSaasDomains\Validation\HostnameValidator;
 
 final class CloudflareSaasDomainsServiceProvider extends ServiceProvider
 {

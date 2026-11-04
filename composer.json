@@ -1,5 +1,5 @@
 {
-    "name": "your-vendor/cloudflare-saas-domains",
+    "name": "a-khalid/cloudflare-saas-domains",
     "description": "Manage the full lifecycle of tenant custom domains on Cloudflare for SaaS (Custom Hostnames) in Laravel.",
     "keywords": ["laravel", "cloudflare", "cloudflare-for-saas", "custom-hostnames", "multi-tenant", "ssl-for-saas"],
     "type": "library",
@@ -23,21 +23,21 @@
     },
     "autoload": {
         "psr-4": {
-            "YourVendor\\CloudflareSaasDomains\\": "src/"
+            "AKhalid\\CloudflareSaasDomains\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "YourVendor\\CloudflareSaasDomains\\Tests\\": "tests/"
+            "AKhalid\\CloudflareSaasDomains\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "YourVendor\\CloudflareSaasDomains\\CloudflareSaasDomainsServiceProvider"
+                "AKhalid\\CloudflareSaasDomains\\CloudflareSaasDomainsServiceProvider"
             ],
             "aliases": {
-                "CloudflareSaasDomains": "YourVendor\\CloudflareSaasDomains\\Facades\\CloudflareSaasDomains"
+                "CloudflareSaasDomains": "AKhalid\\CloudflareSaasDomains\\Facades\\CloudflareSaasDomains"
             }
         }
     },

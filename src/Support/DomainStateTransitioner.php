@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Support;
+namespace AKhalid\CloudflareSaasDomains\Support;
 
+use AKhalid\CloudflareSaasDomains\Data\CustomHostname;
+use AKhalid\CloudflareSaasDomains\Enums\HostnameStatus;
+use AKhalid\CloudflareSaasDomains\Enums\SslStatus;
+use AKhalid\CloudflareSaasDomains\Events\DomainFailed;
+use AKhalid\CloudflareSaasDomains\Events\DomainVerified;
+use AKhalid\CloudflareSaasDomains\Events\SslActivated;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
 use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Carbon;
-use YourVendor\CloudflareSaasDomains\Data\CustomHostname;
-use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
-use YourVendor\CloudflareSaasDomains\Enums\SslStatus;
-use YourVendor\CloudflareSaasDomains\Events\DomainFailed;
-use YourVendor\CloudflareSaasDomains\Events\DomainVerified;
-use YourVendor\CloudflareSaasDomains\Events\SslActivated;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
 
 /**
  * The only writer of remote state onto TenantDomain, so that every path (add, poll,

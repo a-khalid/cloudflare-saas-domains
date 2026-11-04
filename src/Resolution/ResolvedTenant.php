@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Resolution;
+namespace AKhalid\CloudflareSaasDomains\Resolution;
 
 use Illuminate\Database\Eloquent\Model;
 

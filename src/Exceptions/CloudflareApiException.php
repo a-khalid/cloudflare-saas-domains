@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Exceptions;
+namespace AKhalid\CloudflareSaasDomains\Exceptions;
 
+use AKhalid\CloudflareSaasDomains\Data\ApiError;
 use Throwable;
-use YourVendor\CloudflareSaasDomains\Data\ApiError;
 
 /** Cloudflare answered, and the answer was an error. */
 class CloudflareApiException extends CloudflareSaasDomainsException

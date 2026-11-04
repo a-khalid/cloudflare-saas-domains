@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use YourVendor\CloudflareSaasDomains\Dns\DnsInstructions;
-use YourVendor\CloudflareSaasDomains\Dns\DnsRecord;
-use YourVendor\CloudflareSaasDomains\Enums\DnsRecordPurpose;
-use YourVendor\CloudflareSaasDomains\Exceptions\MissingConfigurationException;
-use YourVendor\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
+use AKhalid\CloudflareSaasDomains\Dns\DnsInstructions;
+use AKhalid\CloudflareSaasDomains\Dns\DnsRecord;
+use AKhalid\CloudflareSaasDomains\Enums\DnsRecordPurpose;
+use AKhalid\CloudflareSaasDomains\Exceptions\MissingConfigurationException;
+use AKhalid\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
 
 function storedRecords(array $overrides = []): array
 {

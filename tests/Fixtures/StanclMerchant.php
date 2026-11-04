@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Tests\Fixtures;
+namespace AKhalid\CloudflareSaasDomains\Tests\Fixtures;
 
 use Illuminate\Database\Eloquent\Model;
 use Stancl\Tenancy\Contracts\Tenant;

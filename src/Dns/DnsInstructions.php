@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Dns;
+namespace AKhalid\CloudflareSaasDomains\Dns;
 
+use AKhalid\CloudflareSaasDomains\Enums\DnsRecordPurpose;
+use AKhalid\CloudflareSaasDomains\Enums\HostnameStatus;
+use AKhalid\CloudflareSaasDomains\Enums\SslStatus;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Support\Payload;
 use JsonSerializable;
-use YourVendor\CloudflareSaasDomains\Enums\DnsRecordPurpose;
-use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
-use YourVendor\CloudflareSaasDomains\Enums\SslStatus;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Support\Payload;
 
 /**
  * What the merchant has to do in DNS, given the domain's current state.

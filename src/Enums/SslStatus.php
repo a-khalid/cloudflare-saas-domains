@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Enums;
+namespace AKhalid\CloudflareSaasDomains\Enums;
 
 enum SslStatus: string
 {

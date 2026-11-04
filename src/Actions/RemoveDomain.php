@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Actions;
+namespace AKhalid\CloudflareSaasDomains\Actions;
 
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Enums\HostnameStatus;
+use AKhalid\CloudflareSaasDomains\Enums\SslStatus;
+use AKhalid\CloudflareSaasDomains\Events\DomainRemoved;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
 use Illuminate\Contracts\Events\Dispatcher;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
-use YourVendor\CloudflareSaasDomains\Enums\SslStatus;
-use YourVendor\CloudflareSaasDomains\Events\DomainRemoved;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
 
 final class RemoveDomain
 {

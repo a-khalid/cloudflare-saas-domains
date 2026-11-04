@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Observers;
+namespace AKhalid\CloudflareSaasDomains\Observers;
 
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Resolution\TenantResolver;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Resolution\TenantResolver;
 
 /**
  * Keeps the resolver cache honest. Timestamps like last_checked_at do not touch it.

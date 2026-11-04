@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Resolution;
+namespace AKhalid\CloudflareSaasDomains\Resolution;
 
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Validation\HostnameNormalizer;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Validation\HostnameNormalizer;
 
 final class TenantResolver
 {

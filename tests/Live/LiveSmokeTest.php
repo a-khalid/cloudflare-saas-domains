@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Cloudflare\ClientOptions;
+use AKhalid\CloudflareSaasDomains\Cloudflare\CloudflareClient;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
 use Dotenv\Dotenv;
 use Illuminate\Http\Client\Factory;
-use YourVendor\CloudflareSaasDomains\Cloudflare\ClientOptions;
-use YourVendor\CloudflareSaasDomains\Cloudflare\CloudflareClient;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
 
 /*
  * Talks to the real Cloudflare API and changes a real zone, so it only runs when

@@ -25,7 +25,7 @@ This package manages that whole lifecycle:
 ## Installation
 
 ```bash
-composer require your-vendor/cloudflare-saas-domains
+composer require a-khalid/cloudflare-saas-domains
 ```
 
 ```bash
@@ -93,7 +93,7 @@ The published file has the rest: retry delays, sync batch size and queue, cache 
 Add the trait to your tenant model. It gives you a `customDomains()` relation.
 
 ```php
-use YourVendor\CloudflareSaasDomains\Concerns\HasCustomDomains;
+use AKhalid\CloudflareSaasDomains\Concerns\HasCustomDomains;
 
 class Merchant extends Model
 {
@@ -104,7 +104,7 @@ class Merchant extends Model
 Then manage domains through the facade:
 
 ```php
-use YourVendor\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
+use AKhalid\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
 
 $domain = CloudflareSaasDomains::add($merchant, 'shop.merchant.com');
 
@@ -180,7 +180,7 @@ The CNAME must stay in place for as long as the domain is connected. The ownersh
 | `DomainFailed` | The hostname or certificate moves into a failed state | `domain`, `reason` |
 | `DomainRemoved` | The domain is removed | `domain` |
 
-They live in `YourVendor\CloudflareSaasDomains\Events`, and fire only on a transition, never on an unchanged poll. A domain that fails, recovers and fails again fires `DomainFailed` twice. `SslActivated` also fires when a certificate returns to a serving state after a renewal.
+They live in `AKhalid\CloudflareSaasDomains\Events`, and fire only on a transition, never on an unchanged poll. A domain that fails, recovers and fails again fires `DomainFailed` twice. `SslActivated` also fires when a certificate returns to a serving state after a renewal.
 
 `failure_reason` also carries Cloudflare's current message while a domain is merely pending, such as "custom hostname does not CNAME to this zone". That is normal until the merchant finishes DNS and does not fire `DomainFailed`.
 
@@ -211,7 +211,7 @@ Nothing to configure. When `stancl/tenancy` is installed, the middleware calls `
 `CloudflareSaasDomains::fake()` swaps the API client for an in-memory zone, so your flows run for real, with real events and database rows, without network access.
 
 ```php
-use YourVendor\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
+use AKhalid\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
 
 it('connects a merchant domain', function () {
     Event::fake([DomainVerified::class]);

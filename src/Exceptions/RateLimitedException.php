@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Exceptions;
+namespace AKhalid\CloudflareSaasDomains\Exceptions;
 
-use YourVendor\CloudflareSaasDomains\Data\ApiError;
+use AKhalid\CloudflareSaasDomains\Data\ApiError;
 
 /** HTTP 429 after all retries. */
 final class RateLimitedException extends CloudflareApiException

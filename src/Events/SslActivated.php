@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Events;
+namespace AKhalid\CloudflareSaasDomains\Events;
 
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
 use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
 
 /**
  * The certificate moved into a serving state. $wasVerifiedBefore is true when the

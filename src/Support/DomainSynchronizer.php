@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Support;
+namespace AKhalid\CloudflareSaasDomains\Support;
 
+use AKhalid\CloudflareSaasDomains\Actions\RefreshDomainStatus;
+use AKhalid\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\CloudflareSaasDomainsException;
+use AKhalid\CloudflareSaasDomains\Exceptions\PermissionDeniedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\RateLimitedException;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
 use Illuminate\Contracts\Config\Repository as Config;
 use Psr\Log\LoggerInterface;
-use YourVendor\CloudflareSaasDomains\Actions\RefreshDomainStatus;
-use YourVendor\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\CloudflareSaasDomainsException;
-use YourVendor\CloudflareSaasDomains\Exceptions\PermissionDeniedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\RateLimitedException;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
 
 final class DomainSynchronizer
 {

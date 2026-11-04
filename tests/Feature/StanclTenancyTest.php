@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Tenancy\NullTenantInitializer;
+use AKhalid\CloudflareSaasDomains\Tenancy\StanclTenantInitializer;
+use AKhalid\CloudflareSaasDomains\Tenancy\TenantInitializer;
+use AKhalid\CloudflareSaasDomains\Tests\Fixtures\StanclMerchant;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Tenancy;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Tenancy\NullTenantInitializer;
-use YourVendor\CloudflareSaasDomains\Tenancy\StanclTenantInitializer;
-use YourVendor\CloudflareSaasDomains\Tenancy\TenantInitializer;
-use YourVendor\CloudflareSaasDomains\Tests\Fixtures\StanclMerchant;
 
 it('auto-enables when stancl/tenancy is installed', function () {
     expect(app(TenantInitializer::class))->toBeInstanceOf(StanclTenantInitializer::class);

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Console;
+namespace AKhalid\CloudflareSaasDomains\Console;
 
+use AKhalid\CloudflareSaasDomains\Exceptions\CloudflareSaasDomainsException;
+use AKhalid\CloudflareSaasDomains\Jobs\SyncDomainsJob;
+use AKhalid\CloudflareSaasDomains\Support\DomainSynchronizer;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository as Config;
-use YourVendor\CloudflareSaasDomains\Exceptions\CloudflareSaasDomainsException;
-use YourVendor\CloudflareSaasDomains\Jobs\SyncDomainsJob;
-use YourVendor\CloudflareSaasDomains\Support\DomainSynchronizer;
 
 final class SyncDomainsCommand extends Command
 {

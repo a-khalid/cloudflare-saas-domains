@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Events\DomainAdded;
+use AKhalid\CloudflareSaasDomains\Events\DomainFailed;
+use AKhalid\CloudflareSaasDomains\Exceptions\DomainAlreadyClaimedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ServerErrorException;
+use AKhalid\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Resolution\TenantResolver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
-use YourVendor\CloudflareSaasDomains\Events\DomainAdded;
-use YourVendor\CloudflareSaasDomains\Events\DomainFailed;
-use YourVendor\CloudflareSaasDomains\Exceptions\DomainAlreadyClaimedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ServerErrorException;
-use YourVendor\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Resolution\TenantResolver;
 
 beforeEach(function () {
     Sleep::fake();

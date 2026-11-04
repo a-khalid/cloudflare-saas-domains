@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Concerns;
+namespace AKhalid\CloudflareSaasDomains\Concerns;
 
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
 
 /**
  * Add to your tenant model.

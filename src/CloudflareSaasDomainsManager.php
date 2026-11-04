@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains;
+namespace AKhalid\CloudflareSaasDomains;
 
+use AKhalid\CloudflareSaasDomains\Actions\AddDomain;
+use AKhalid\CloudflareSaasDomains\Actions\RefreshDomainStatus;
+use AKhalid\CloudflareSaasDomains\Actions\RemoveDomain;
+use AKhalid\CloudflareSaasDomains\Actions\RetryValidation;
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Data\FallbackOrigin;
+use AKhalid\CloudflareSaasDomains\Dns\DnsInstructions;
+use AKhalid\CloudflareSaasDomains\Exceptions\MissingConfigurationException;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Resolution\CurrentTenant;
+use AKhalid\CloudflareSaasDomains\Testing\FakeCustomHostnameClient;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Database\Eloquent\Model;
-use YourVendor\CloudflareSaasDomains\Actions\AddDomain;
-use YourVendor\CloudflareSaasDomains\Actions\RefreshDomainStatus;
-use YourVendor\CloudflareSaasDomains\Actions\RemoveDomain;
-use YourVendor\CloudflareSaasDomains\Actions\RetryValidation;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Data\FallbackOrigin;
-use YourVendor\CloudflareSaasDomains\Dns\DnsInstructions;
-use YourVendor\CloudflareSaasDomains\Exceptions\MissingConfigurationException;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Resolution\CurrentTenant;
-use YourVendor\CloudflareSaasDomains\Testing\FakeCustomHostnameClient;
 
 /**
  * The public API behind the facade. Actions are resolved on each call so that

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Dns;
+namespace AKhalid\CloudflareSaasDomains\Dns;
 
+use AKhalid\CloudflareSaasDomains\Enums\DnsRecordPurpose;
 use JsonSerializable;
-use YourVendor\CloudflareSaasDomains\Enums\DnsRecordPurpose;
 
 final readonly class DnsRecord implements JsonSerializable
 {

@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Events\DomainAdded;
+use AKhalid\CloudflareSaasDomains\Events\DomainVerified;
+use AKhalid\CloudflareSaasDomains\Events\SslActivated;
+use AKhalid\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\DomainAlreadyClaimedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidTenantException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ServerErrorException;
+use AKhalid\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Tests\Fixtures\Merchant;
+use AKhalid\CloudflareSaasDomains\Tests\Fixtures\OtherTenant;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
-use YourVendor\CloudflareSaasDomains\Events\DomainAdded;
-use YourVendor\CloudflareSaasDomains\Events\DomainVerified;
-use YourVendor\CloudflareSaasDomains\Events\SslActivated;
-use YourVendor\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\DomainAlreadyClaimedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidTenantException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ServerErrorException;
-use YourVendor\CloudflareSaasDomains\Facades\CloudflareSaasDomains;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Tests\Fixtures\Merchant;
-use YourVendor\CloudflareSaasDomains\Tests\Fixtures\OtherTenant;
 
 beforeEach(fn () => Sleep::fake());
 

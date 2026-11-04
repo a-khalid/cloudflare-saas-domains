@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Data;
+namespace AKhalid\CloudflareSaasDomains\Data;
 
-use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidResponseException;
-use YourVendor\CloudflareSaasDomains\Support\Payload;
+use AKhalid\CloudflareSaasDomains\Enums\HostnameStatus;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidResponseException;
+use AKhalid\CloudflareSaasDomains\Support\Payload;
 
 final readonly class CustomHostname
 {

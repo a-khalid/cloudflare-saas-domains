@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Cloudflare\CloudflareClient;
+use AKhalid\CloudflareSaasDomains\CloudflareSaasDomainsServiceProvider;
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Resolution\TenantResolver;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use YourVendor\CloudflareSaasDomains\Cloudflare\CloudflareClient;
-use YourVendor\CloudflareSaasDomains\CloudflareSaasDomainsServiceProvider;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Resolution\TenantResolver;
 
 it('binds the real client by default', function () {
     expect(app(CustomHostnameClient::class))->toBeInstanceOf(CloudflareClient::class);

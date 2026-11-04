@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Actions;
+namespace AKhalid\CloudflareSaasDomains\Actions;
 
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Exceptions\DomainNotProvisionedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Support\DomainStateTransitioner;
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Exceptions\DomainNotProvisionedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Support\DomainStateTransitioner;
 
 final class RefreshDomainStatus
 {

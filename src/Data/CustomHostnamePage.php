@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Data;
+namespace AKhalid\CloudflareSaasDomains\Data;
 
 final readonly class CustomHostnamePage
 {

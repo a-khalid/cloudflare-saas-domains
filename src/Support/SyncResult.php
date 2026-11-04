@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Support;
+namespace AKhalid\CloudflareSaasDomains\Support;
 
 final readonly class SyncResult
 {

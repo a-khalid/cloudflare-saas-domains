@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Http\Middleware;
+namespace AKhalid\CloudflareSaasDomains\Http\Middleware;
 
+use AKhalid\CloudflareSaasDomains\Resolution\CurrentTenant;
+use AKhalid\CloudflareSaasDomains\Resolution\TenantResolver;
+use AKhalid\CloudflareSaasDomains\Tenancy\TenantInitializer;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use YourVendor\CloudflareSaasDomains\Resolution\CurrentTenant;
-use YourVendor\CloudflareSaasDomains\Resolution\TenantResolver;
-use YourVendor\CloudflareSaasDomains\Tenancy\TenantInitializer;
 
 final class ResolveTenantByHostname
 {

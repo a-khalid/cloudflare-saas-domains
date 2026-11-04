@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Actions;
+namespace AKhalid\CloudflareSaasDomains\Actions;
 
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Exceptions\DomainNotProvisionedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Support\DomainStateTransitioner;
 use Illuminate\Contracts\Config\Repository as Config;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
-use YourVendor\CloudflareSaasDomains\Exceptions\DomainNotProvisionedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Support\DomainStateTransitioner;
 
 final class RetryValidation
 {

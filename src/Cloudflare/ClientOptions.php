@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Cloudflare;
+namespace AKhalid\CloudflareSaasDomains\Cloudflare;
 
-use YourVendor\CloudflareSaasDomains\Support\Payload;
+use AKhalid\CloudflareSaasDomains\Support\Payload;
 
 final readonly class ClientOptions
 {

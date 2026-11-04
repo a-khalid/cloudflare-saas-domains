@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Data;
+namespace AKhalid\CloudflareSaasDomains\Data;
 
-use YourVendor\CloudflareSaasDomains\Support\Payload;
+use AKhalid\CloudflareSaasDomains\Support\Payload;
 
 /** The ssl object sent on create and on re-validation. */
 final readonly class SslOptions

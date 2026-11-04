@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Events\DomainVerified;
+use AKhalid\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
+use AKhalid\CloudflareSaasDomains\Jobs\SyncDomainsJob;
+use AKhalid\CloudflareSaasDomains\Models\TenantDomain;
+use AKhalid\CloudflareSaasDomains\Support\DomainSynchronizer;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Sleep;
-use YourVendor\CloudflareSaasDomains\Events\DomainVerified;
-use YourVendor\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
-use YourVendor\CloudflareSaasDomains\Jobs\SyncDomainsJob;
-use YourVendor\CloudflareSaasDomains\Models\TenantDomain;
-use YourVendor\CloudflareSaasDomains\Support\DomainSynchronizer;
 
 beforeEach(fn () => Sleep::fake());
 

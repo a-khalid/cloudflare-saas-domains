@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\CloudflareSaasDomains\Tests;
+namespace AKhalid\CloudflareSaasDomains\Tests;
 
+use AKhalid\CloudflareSaasDomains\CloudflareSaasDomainsServiceProvider;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as Orchestra;
-use YourVendor\CloudflareSaasDomains\CloudflareSaasDomainsServiceProvider;
 
 abstract class TestCase extends Orchestra
 {

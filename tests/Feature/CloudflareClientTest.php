@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
+use AKhalid\CloudflareSaasDomains\Cloudflare\ClientOptions;
+use AKhalid\CloudflareSaasDomains\Cloudflare\CloudflareClient;
+use AKhalid\CloudflareSaasDomains\Contracts\CustomHostnameClient;
+use AKhalid\CloudflareSaasDomains\Data\ApiError;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Enums\FallbackOriginStatus;
+use AKhalid\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ConnectionFailedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidRequestException;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidResponseException;
+use AKhalid\CloudflareSaasDomains\Exceptions\MissingConfigurationException;
+use AKhalid\CloudflareSaasDomains\Exceptions\PermissionDeniedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\RateLimitedException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
+use AKhalid\CloudflareSaasDomains\Exceptions\ServerErrorException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
-use YourVendor\CloudflareSaasDomains\Cloudflare\ClientOptions;
-use YourVendor\CloudflareSaasDomains\Cloudflare\CloudflareClient;
-use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
-use YourVendor\CloudflareSaasDomains\Data\ApiError;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
-use YourVendor\CloudflareSaasDomains\Enums\FallbackOriginStatus;
-use YourVendor\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ConnectionFailedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidRequestException;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidResponseException;
-use YourVendor\CloudflareSaasDomains\Exceptions\MissingConfigurationException;
-use YourVendor\CloudflareSaasDomains\Exceptions\PermissionDeniedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\RateLimitedException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ResourceNotFoundException;
-use YourVendor\CloudflareSaasDomains\Exceptions\ServerErrorException;
 
 beforeEach(function () {
     Sleep::fake();

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use YourVendor\CloudflareSaasDomains\Data\CustomHostname;
-use YourVendor\CloudflareSaasDomains\Data\FallbackOrigin;
-use YourVendor\CloudflareSaasDomains\Data\SslDetails;
-use YourVendor\CloudflareSaasDomains\Data\SslOptions;
-use YourVendor\CloudflareSaasDomains\Data\ValidationRecord;
-use YourVendor\CloudflareSaasDomains\Enums\FallbackOriginStatus;
-use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
-use YourVendor\CloudflareSaasDomains\Enums\SslStatus;
-use YourVendor\CloudflareSaasDomains\Exceptions\InvalidResponseException;
+use AKhalid\CloudflareSaasDomains\Data\CustomHostname;
+use AKhalid\CloudflareSaasDomains\Data\FallbackOrigin;
+use AKhalid\CloudflareSaasDomains\Data\SslDetails;
+use AKhalid\CloudflareSaasDomains\Data\SslOptions;
+use AKhalid\CloudflareSaasDomains\Data\ValidationRecord;
+use AKhalid\CloudflareSaasDomains\Enums\FallbackOriginStatus;
+use AKhalid\CloudflareSaasDomains\Enums\HostnameStatus;
+use AKhalid\CloudflareSaasDomains\Enums\SslStatus;
+use AKhalid\CloudflareSaasDomains\Exceptions\InvalidResponseException;
 
 it('knows every documented hostname status', function () {
     $documented = ['active', 'pending', 'active_redeploying', 'moved', 'pending_deletion', 'deleted', 'pending_blocked', 'pending_migration', 'pending_provisioned', 'test_pending', 'test_active', 'test_active_apex', 'test_blocked', 'test_failed', 'provisioned', 'blocked'];
