@@ -7,6 +7,7 @@ Only the latest release receives security fixes.
 | Version | Supported |
 |---|---|
 | 0.1.x | Yes |
+| 0.0.x (Laravel 10 and 11) | Best effort |
 
 ## Reporting a vulnerability
 

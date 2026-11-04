@@ -41,8 +41,6 @@ class TenantDomain extends Model
     protected $guarded = ['id'];
 
     /**
-     * A property, not the casts() method, because Laravel 10 only reads the property.
-     *
      * @var array<string, string>
      */
     protected $casts = [
