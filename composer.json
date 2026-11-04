@@ -1,0 +1,67 @@
+{
+    "name": "your-vendor/cloudflare-saas-domains",
+    "description": "Manage the full lifecycle of tenant custom domains on Cloudflare for SaaS (Custom Hostnames) in Laravel.",
+    "keywords": ["laravel", "cloudflare", "cloudflare-for-saas", "custom-hostnames", "multi-tenant", "ssl-for-saas"],
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "ext-intl": "*",
+        "guzzlehttp/guzzle": "^7.8",
+        "illuminate/bus": "^11.0|^12.0|^13.0",
+        "illuminate/cache": "^11.0|^12.0|^13.0",
+        "illuminate/console": "^11.0|^12.0|^13.0",
+        "illuminate/contracts": "^11.0|^12.0|^13.0",
+        "illuminate/database": "^11.0|^12.0|^13.0",
+        "illuminate/events": "^11.0|^12.0|^13.0",
+        "illuminate/http": "^11.0|^12.0|^13.0",
+        "illuminate/queue": "^11.0|^12.0|^13.0",
+        "illuminate/support": "^11.0|^12.0|^13.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.18",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^3.8|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.2|^4.1",
+        "stancl/tenancy": "^3.9"
+    },
+    "suggest": {
+        "stancl/tenancy": "Initializes tenancy automatically when a tenant is resolved by hostname."
+    },
+    "autoload": {
+        "psr-4": {
+            "YourVendor\\CloudflareSaasDomains\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "YourVendor\\CloudflareSaasDomains\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "YourVendor\\CloudflareSaasDomains\\CloudflareSaasDomainsServiceProvider"
+            ],
+            "aliases": {
+                "CloudflareSaasDomains": "YourVendor\\CloudflareSaasDomains\\Facades\\CloudflareSaasDomains"
+            }
+        }
+    },
+    "scripts": {
+        "test": "pest",
+        "test:coverage": "pest --coverage --min=90",
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "format": "pint",
+        "format:check": "pint --test"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
