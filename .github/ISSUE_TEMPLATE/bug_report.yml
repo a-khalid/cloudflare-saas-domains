@@ -1,0 +1,42 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How to reproduce
+      description: A failing test using `CloudflareSaasDomains::fake()` or `Http::fake()` is ideal.
+    validations:
+      required: true
+  - type: textarea
+    id: cloudflare-response
+    attributes:
+      label: Cloudflare response
+      description: If relevant, the status and JSON body. Remove tokens, zone IDs and customer hostnames.
+      render: json
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+    validations:
+      required: true
+  - type: input
+    id: laravel-version
+    attributes:
+      label: Laravel version
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+    validations:
+      required: true
