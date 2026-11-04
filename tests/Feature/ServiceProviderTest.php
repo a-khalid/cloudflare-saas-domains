@@ -25,6 +25,10 @@ it('publishes the config and migration', function () {
 });
 
 it('publishes the migration under a date that vendor:publish rewrites', function () {
+    if (! method_exists(ServiceProvider::class, 'publishableMigrationPaths')) {
+        $this->markTestSkipped('Laravel 10 dates the migration in the service provider.');
+    }
+
     $published = ServiceProvider::publishableMigrationPaths();
 
     expect(array_filter($published, fn (string $path) => is_file($path) && str_ends_with($path, '_create_tenant_domains_table.php')))->toHaveCount(1);

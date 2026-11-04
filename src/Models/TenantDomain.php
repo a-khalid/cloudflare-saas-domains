@@ -39,6 +39,18 @@ class TenantDomain extends Model
 
     protected $guarded = ['id'];
 
+    /**
+     * A property, not the casts() method, because Laravel 10 only reads the property.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'verification_records' => 'array',
+        'ssl_expires_at' => 'datetime',
+        'last_checked_at' => 'datetime',
+        'verified_at' => 'datetime',
+    ];
+
     public function getTable(): string
     {
         $table = config('cloudflare-saas-domains.table', 'tenant_domains');
@@ -57,19 +69,6 @@ class TenantDomain extends Model
         $connection = config('cloudflare-saas-domains.connection');
 
         return is_string($connection) && $connection !== '' ? $connection : null;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'verification_records' => 'array',
-            'ssl_expires_at' => 'datetime',
-            'last_checked_at' => 'datetime',
-            'verified_at' => 'datetime',
-        ];
     }
 
     /**

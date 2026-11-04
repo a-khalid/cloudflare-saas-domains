@@ -19,7 +19,7 @@ This package manages that whole lifecycle:
 ## Requirements
 
 - PHP 8.3+ with the `intl` extension
-- Laravel 12 or 13
+- Laravel 12 or 13 (Laravel 10 and 11 work, see [below](#laravel-10-and-11))
 - A Cloudflare zone with Cloudflare for SaaS enabled, an active [fallback origin](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/), and an API token with `SSL and Certificates Write` on that zone
 
 ## Installation
@@ -41,6 +41,21 @@ Tenant IDs default to big integers. If yours are not, set `CF_SAAS_TENANT_KEY_TY
 ```bash
 php artisan migrate
 ```
+
+### Laravel 10 and 11
+
+The package works on both, and the test suite passes on both. They need PHP 8.3 like everything else here, which rules out Laravel 10 apps still on PHP 8.1 or 8.2.
+
+Both versions are past security support: Laravel 10 ended on 2025-02-04 and Laravel 11 on 2026-03-12, and every release has open security advisories.
+
+- **An existing app with a `composer.lock`:** `composer require` works as usual, with an advisory warning, because your locked Laravel stays as it is.
+- **A full `composer update`, or a new project:** Composer refuses to pick those Laravel releases. Getting past that takes the command below, which turns the protection off for every package in your project, so upgrading Laravel is the better fix.
+
+```bash
+composer config policy.advisories.block false
+```
+
+Laravel 10 doesn't get PHPStan checks in CI, only the test suite.
 
 ## Configuration
 
@@ -253,7 +268,7 @@ During a sync, one failing domain is logged and the run continues, a rate limit 
 - **Cloudflare-to-Cloudflare hostnames.** Cloudflare doesn't support pre-validation when the merchant's own zone is also on Cloudflare. The ownership TXT won't help them, and they need the CNAME in place.
 - **Not covered yet:** wildcard hostnames, custom certificates, per-hostname `custom_origin_server`, and custom metadata through `add()` (the client supports metadata).
 - **Retries block.** A retried call can wait several seconds in the current process, which matters in a web request. Lower `CF_SAAS_HTTP_RETRIES` if needed, or call `add` from a job.
-- **Laravel 11 is not supported.** It is past security support and Composer refuses to install it by default because of open advisories.
+- **Laravel 10 and 11 are end of life.** They work, but Composer blocks them by default. See [Laravel 10 and 11](#laravel-10-and-11).
 
 ## Development
 

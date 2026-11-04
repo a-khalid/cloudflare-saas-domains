@@ -32,9 +32,10 @@ final class TenantDomainObserver
 
         $this->forgetAfterCommit($domain, $domain->hostname);
 
-        $previous = $domain->getPrevious()['hostname'] ?? null;
+        // The original attributes are only synced after this event, so this is the old value.
+        $previous = $domain->getRawOriginal('hostname');
 
-        if (is_string($previous)) {
+        if (is_string($previous) && $previous !== $domain->hostname) {
             $this->forgetAfterCommit($domain, $previous);
         }
     }

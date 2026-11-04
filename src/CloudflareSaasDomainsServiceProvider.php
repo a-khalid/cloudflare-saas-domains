@@ -92,9 +92,7 @@ final class CloudflareSaasDomainsServiceProvider extends ServiceProvider
             __DIR__.'/../config/cloudflare-saas-domains.php' => $this->app->configPath('cloudflare-saas-domains.php'),
         ], self::CONFIG.'-config');
 
-        $this->publishesMigrations([
-            __DIR__.'/../database/migrations/'.self::MIGRATION => $this->app->databasePath('migrations/'.self::MIGRATION),
-        ], self::CONFIG.'-migrations');
+        $this->publishMigration();
 
         if ($this->app->runningInConsole()) {
             $this->commands([SyncDomainsCommand::class]);
@@ -105,6 +103,23 @@ final class CloudflareSaasDomainsServiceProvider extends ServiceProvider
         });
 
         TenantDomain::observe(TenantDomainObserver::class);
+    }
+
+    private function publishMigration(): void
+    {
+        $source = __DIR__.'/../database/migrations/'.self::MIGRATION;
+        $tag = self::CONFIG.'-migrations';
+
+        if (version_compare($this->app->version(), '11.0', '>=')) {
+            $this->publishesMigrations([$source => $this->app->databasePath('migrations/'.self::MIGRATION)], $tag);
+
+            return;
+        }
+
+        // Laravel 10 has no publishesMigrations(), so the date is set here instead.
+        $name = date('Y_m_d_His').substr(self::MIGRATION, strlen('2026_01_01_000000'));
+
+        $this->publishes([$source => $this->app->databasePath('migrations/'.$name)], $tag);
     }
 
     /**

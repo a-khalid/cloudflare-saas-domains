@@ -20,3 +20,4 @@ All notable changes to this project are documented here. The format follows
 - `ResolveTenantByHostname` middleware with caching and automatic invalidation.
 - Optional `stancl/tenancy` integration.
 - `CloudflareSaasDomains::fake()` for testing without network access.
+- Support for Laravel 10, 11, 12 and 13 on PHP 8.3+. Laravel 10 and 11 are end of life, and Composer's advisory blocking affects full updates and new projects on them.
