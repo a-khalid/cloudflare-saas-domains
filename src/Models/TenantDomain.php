@@ -122,7 +122,9 @@ class TenantDomain extends Model
         }
 
         return $this->sslState()->isServing()
-            || ($this->sslState()->isRenewing() && $this->ssl_expires_at?->isAfter($now ?? Carbon::now()) === true);
+            || ($this->sslState()->isRenewing()
+                && $this->ssl_activated_at !== null
+                && $this->ssl_expires_at?->isAfter($now ?? Carbon::now()) === true);
     }
 
     /**
@@ -137,6 +139,7 @@ class TenantDomain extends Model
                 $query->whereIn('ssl_status', SslStatus::servingValues())
                     ->orWhere(static function (Builder $query): void {
                         $query->whereIn('ssl_status', SslStatus::renewingValues())
+                            ->whereNotNull('ssl_activated_at')
                             ->where('ssl_expires_at', '>', Carbon::now());
                     });
             });
