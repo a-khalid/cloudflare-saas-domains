@@ -167,6 +167,7 @@ describe('certificate state', function () {
             'hostname_status' => 'active',
             'ssl_status' => 'active',
             'ssl_expires_at' => now()->addDays(20),
+            'ssl_activated_at' => now()->subDays(70),
         ]);
 
         CloudflareSaasDomains::refresh($domain);
@@ -174,6 +175,25 @@ describe('certificate state', function () {
         expect($domain->ssl_status)->toBe('pending_validation')
             ->and($domain->ssl_expires_at)->not->toBeNull()
             ->and($domain->isResolvable())->toBeTrue()
+            ->and(app(TenantResolver::class)->resolve('shop.acme.com'))->not->toBeNull();
+    });
+
+    it('resolves a first certificate only once it serves, even with an expiry reported early', function () {
+        $active = ['status' => 'active', 'verification_errors' => []];
+        Http::fake(['*' => Http::sequence()
+            ->push(envelope(hostnamePayload($active, ['status' => 'pending_validation', 'expires_on' => '2030-01-01T00:00:00Z'])))
+            ->push(envelope(hostnamePayload($active, ['status' => 'active', 'expires_on' => '2030-01-01T00:00:00Z'])))]);
+        $domain = domainFor(merchant());
+
+        CloudflareSaasDomains::refresh($domain);
+
+        expect($domain->ssl_expires_at)->not->toBeNull()
+            ->and($domain->isResolvable())->toBeFalse()
+            ->and(app(TenantResolver::class)->resolve('shop.acme.com'))->toBeNull();
+
+        CloudflareSaasDomains::refresh($domain);
+
+        expect($domain->isResolvable())->toBeTrue()
             ->and(app(TenantResolver::class)->resolve('shop.acme.com'))->not->toBeNull();
     });
 

@@ -79,33 +79,42 @@ it('only resolves active domains', function (string $hostnameStatus, ?string $ss
 ]);
 
 it('keeps resolving through a renewal while the certificate is unexpired', function () {
-    live(['ssl_status' => 'pending_validation', 'ssl_expires_at' => now()->addDay()]);
+    live(['ssl_status' => 'pending_validation', 'ssl_expires_at' => now()->addDay(), 'ssl_activated_at' => now()->subMonths(3)]);
 
     $this->get('https://shop.acme.com/whoami')->assertOk();
 });
 
 it('stops resolving a renewal once the certificate has expired', function () {
-    live(['ssl_status' => 'pending_validation', 'ssl_expires_at' => now()->subDay()]);
+    live(['ssl_status' => 'pending_validation', 'ssl_expires_at' => now()->subDay(), 'ssl_activated_at' => now()->subMonths(3)]);
 
     $this->get('https://shop.acme.com/whoami')->assertNotFound();
 });
 
-it('agrees with the scope in isResolvable', function (string $hostnameStatus, string $sslStatus, ?string $expires, bool $expected) {
+it('does not resolve a first certificate that has an expiry but has never served', function () {
+    live(['ssl_status' => 'pending_validation', 'ssl_expires_at' => now()->addMonths(3)]);
+
+    $this->get('https://shop.acme.com/whoami')->assertNotFound();
+});
+
+it('agrees with the scope in isResolvable', function (string $hostnameStatus, string $sslStatus, ?string $expires, bool $hasServed, bool $expected) {
     $domain = domainFor(merchant(), [
         'hostname_status' => $hostnameStatus,
         'ssl_status' => $sslStatus,
         'ssl_expires_at' => $expires === null ? null : now()->modify($expires),
+        'ssl_activated_at' => $hasServed ? now()->subMonths(3) : null,
     ]);
 
     expect($domain->isResolvable())->toBe($expected)
         ->and(TenantDomain::query()->resolvable()->exists())->toBe($expected);
 })->with([
-    ['active', 'active', null, true],
-    ['active_redeploying', 'pending_expiration', null, true],
-    ['active', 'pending_issuance', '+1 day', true],
-    ['active', 'pending_issuance', '-1 day', false],
-    ['active', 'pending_issuance', null, false],
-    ['pending', 'active', null, false],
+    ['active', 'active', null, false, true],
+    ['active_redeploying', 'pending_expiration', null, false, true],
+    ['active', 'pending_issuance', '+1 day', true, true],
+    ['active', 'pending_issuance', '+1 day', false, false],
+    ['active', 'pending_issuance', '-1 day', true, false],
+    ['active', 'pending_issuance', null, true, false],
+    ['pending', 'active', null, true, false],
+    ['pending', 'pending_issuance', '+1 day', true, false],
 ]);
 
 it('does not resolve a soft-deleted domain', function () {
