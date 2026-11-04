@@ -151,7 +151,7 @@ TXT   _acme-challenge.shop.merchant.com     810b7d5f01154524b961ba0cd578acc2    
 
 Cloudflare generates certificate tokens asynchronously, so they may be missing just after creation. When `$instructions->awaitingValidationRecords` is `true`, refresh the domain and ask again. `optional()` lists DCV delegation records when Cloudflare provides them. `toArray()` and `json_encode()` both work for API responses.
 
-The CNAME must stay in place for as long as the domain is connected. The TXT records can be removed once the domain is live.
+The CNAME must stay in place for as long as the domain is connected. The ownership TXT can be removed once the hostname is active. Renewals can bring new certificate tokens, which `required()` shows when a sync sees them.
 
 ## Events
 
@@ -243,7 +243,7 @@ During a sync, one failing domain is logged and the run continues, a rate limit 
 
 - **Not yet verified against the live API.** The client is built from Cloudflare's current documentation and tested with `Http::fake()`. Run the [live smoke test](CONTRIBUTING.md#live-smoke-test) on a test zone before relying on it in production.
 - **Apex domains need Cloudflare's help.** `merchant.com` can't use a CNAME in standard DNS, so it needs [Apex Proxying](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/advanced-settings/apex-proxying/) or BYOIP, which are limited to certain plans and cost extra. Apex domains are blocked by default. `CF_SAAS_ALLOW_APEX=true` lets them through, but `DnsInstructions` still shows a CNAME: you need to tell those merchants your A records yourself.
-- **Apex detection is approximate.** It uses a built-in list of common suffixes such as `co.uk` and `com.sa`, not the full Public Suffix List. An unlisted suffix can let an apex through as if it were a subdomain. Cloudflare would then not validate it unless the merchant's DNS allows it. Add suffixes in `validation.public_suffixes`.
+- **Apex detection is approximate.** It uses a built-in list of common suffixes such as `co.uk` and `com.sa`, not the full Public Suffix List. An unlisted suffix can let an apex through as if it were a subdomain. Add suffixes in `validation.public_suffixes`.
 - **Polling only.** Status changes appear on your next sync, not instantly. Live domains are only re-checked with `--all`.
 - **Renewal behavior is an assumption.** The docs do not describe `ssl.status` during renewal. So a store doesn't go dark, a domain keeps resolving through renewal-looking states while its stored certificate expiry is in the future. See `PLAN.md`, assumption 6.
 - **Duplicate detection is by message.** Cloudflare documents no error code for it. See `PLAN.md`, assumption 1.

@@ -30,6 +30,9 @@ final class CloudflareSaasDomainsServiceProvider extends ServiceProvider
 {
     private const CONFIG = 'cloudflare-saas-domains';
 
+    /** The date is replaced with the publish date by vendor:publish. */
+    private const MIGRATION = '2026_01_01_000000_create_tenant_domains_table.php';
+
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/cloudflare-saas-domains.php', self::CONFIG);
@@ -84,7 +87,7 @@ final class CloudflareSaasDomainsServiceProvider extends ServiceProvider
         ], self::CONFIG.'-config');
 
         $this->publishesMigrations([
-            __DIR__.'/../database/migrations' => $this->app->databasePath('migrations'),
+            __DIR__.'/../database/migrations/'.self::MIGRATION => $this->app->databasePath('migrations/'.self::MIGRATION),
         ], self::CONFIG.'-migrations');
 
         if ($this->app->runningInConsole()) {

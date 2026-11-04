@@ -24,6 +24,12 @@ it('publishes the config and migration', function () {
         ->and(implode(',', array_values($paths)))->toContain('cloudflare-saas-domains.php');
 });
 
+it('publishes the migration under a date that vendor:publish rewrites', function () {
+    $published = ServiceProvider::publishableMigrationPaths();
+
+    expect(array_filter($published, fn (string $path) => is_file($path) && str_ends_with($path, '_create_tenant_domains_table.php')))->toHaveCount(1);
+});
+
 it('reads a custom cache store and TTLs', function () {
     config()->set('cloudflare-saas-domains.cache.store', 'array');
     config()->set('cloudflare-saas-domains.cache.prefix', 'x:');
@@ -43,7 +49,7 @@ it('migrates every tenant key type', function (string $type, string $column) {
     config()->set('cloudflare-saas-domains.tenant_key_type', $type);
     config()->set('cloudflare-saas-domains.table', "domains_{$type}");
 
-    $migration = require __DIR__.'/../../database/migrations/create_tenant_domains_table.php';
+    $migration = require __DIR__.'/../../database/migrations/2026_01_01_000000_create_tenant_domains_table.php';
     $migration->up();
 
     expect(Schema::getColumnType("domains_{$type}", 'tenant_id'))->toBe($column);
