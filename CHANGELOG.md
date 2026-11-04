@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-## [0.1.0] - Unreleased
+## [0.0.1] - 2026-11-05
 
 ### Added
 
@@ -20,4 +20,4 @@ All notable changes to this project are documented here. The format follows
 - `ResolveTenantByHostname` middleware with caching and automatic invalidation.
 - Optional `stancl/tenancy` integration.
 - `CloudflareSaasDomains::fake()` for testing without network access.
-- Support for Laravel 10, 11, 12 and 13 on PHP 8.3+. Laravel 10 and 11 are end of life, and Composer's advisory blocking affects full updates and new projects on them.
+- Legacy release line for Laravel 10 and 11 on PHP 8.3+. Both are end of life, and Composer's advisory blocking affects full updates and new projects on them.

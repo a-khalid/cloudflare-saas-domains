@@ -1,5 +1,7 @@
 # Cloudflare for SaaS Domains for Laravel
 
+> **This is the legacy release for Laravel 10 and 11**, both past security support. On Laravel 12 or 13, use the current release line instead.
+
 Let the merchants on your multi-tenant SaaS connect their own domains through [Cloudflare for SaaS](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/) (Custom Hostnames, formerly SSL for SaaS).
 
 ## The problem
@@ -19,13 +21,13 @@ This package manages that whole lifecycle:
 ## Requirements
 
 - PHP 8.3+ with the `intl` extension
-- Laravel 12 or 13 (Laravel 10 and 11 work, see [below](#laravel-10-and-11))
+- Laravel 10 or 11 (see [below](#laravel-10-and-11))
 - A Cloudflare zone with Cloudflare for SaaS enabled, an active [fallback origin](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/getting-started/), and an API token with `SSL and Certificates Write` on that zone
 
 ## Installation
 
 ```bash
-composer require a-khalid/cloudflare-saas-domains
+composer require a-khalid/cloudflare-saas-domains:~0.0.1
 ```
 
 ```bash
