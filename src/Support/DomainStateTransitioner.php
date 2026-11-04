@@ -33,7 +33,11 @@ final class DomainStateTransitioner
             $domain->hostname_status = $remote->rawStatus;
             $domain->ssl_status = $remote->ssl?->rawStatus;
             $domain->verification_records = $remote->verificationRecords();
-            $domain->ssl_expires_at = $remote->ssl?->expiresOn === null ? null : Carbon::parse($remote->ssl->expiresOn);
+            // Kept when absent: a renewal must not forget the expiry of the certificate still being served.
+            if ($remote->ssl?->expiresOn !== null) {
+                $domain->ssl_expires_at = Carbon::parse($remote->ssl->expiresOn)->setTimezone(date_default_timezone_get());
+            }
+
             $domain->failure_reason = $remote->errors() === [] ? null : implode('; ', $remote->errors());
         }, $precedingEvents);
     }
@@ -57,12 +61,12 @@ final class DomainStateTransitioner
      */
     private function transition(TenantDomain $domain, Closure $mutate, array $precedingEvents = []): TenantDomain
     {
-        $events = $domain->getConnection()->transaction(function () use ($domain, $mutate): array {
+        $events = $domain->getConnection()->transaction(function () use ($domain, $mutate): ?array {
             // Locking means two concurrent polls cannot both see the same transition.
             $locked = $domain->newQueryWithoutScopes()->lockForUpdate()->find($domain->getKey());
 
             if (! $locked instanceof TenantDomain || $locked->trashed()) {
-                return [];
+                return null;
             }
 
             $domain->setRawAttributes($locked->getAttributes(), true);
@@ -77,6 +81,10 @@ final class DomainStateTransitioner
 
             $domain->last_checked_at = Carbon::now();
 
+            if ($domain->isFailed()) {
+                $domain->failure_reason ??= $this->describeFailure($domain);
+            }
+
             $events = [];
 
             if (! $wasActive && $domain->hostnameState()->isActive()) {
@@ -89,14 +97,17 @@ final class DomainStateTransitioner
             }
 
             if (! $wasFailed && $domain->isFailed()) {
-                $domain->failure_reason ??= $this->describeFailure($domain);
-                $events[] = new DomainFailed($domain, $domain->failure_reason);
+                $events[] = new DomainFailed($domain, (string) $domain->failure_reason);
             }
 
             $domain->save();
 
             return $events;
         });
+
+        if ($events === null) {
+            return $domain;
+        }
 
         foreach ([...$precedingEvents, ...$events] as $event) {
             $this->events->dispatch($event);

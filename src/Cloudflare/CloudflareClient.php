@@ -187,8 +187,13 @@ final class CloudflareClient implements CustomHostnameClient
                 continue;
             }
 
-            if ($canRetry && ($response->status() === 429 || $response->serverError())) {
-                $this->backoff($attempt, $this->retryAfter($response));
+            $retryAfter = $this->retryAfter($response);
+
+            // Cloudflare asked for longer than we are willing to block, so retrying sooner would only fail again.
+            $worthRetrying = $retryAfter === null || $retryAfter * 1000 <= $this->options->retryMaxMs;
+
+            if ($canRetry && $worthRetrying && ($response->status() === 429 || $response->serverError())) {
+                $this->backoff($attempt, $retryAfter);
 
                 continue;
             }

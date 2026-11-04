@@ -46,6 +46,19 @@ class TenantDomain extends Model
         return is_string($table) ? $table : 'tenant_domains';
     }
 
+    public function getConnectionName(): ?string
+    {
+        $own = parent::getConnectionName();
+
+        if ($own !== null) {
+            return $own;
+        }
+
+        $connection = config('cloudflare-saas-domains.connection');
+
+        return is_string($connection) && $connection !== '' ? $connection : null;
+    }
+
     /**
      * @return array<string, string>
      */

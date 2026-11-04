@@ -18,7 +18,11 @@ final class SyncDomainsJob implements ShouldBeUnique, ShouldQueue
     /** The next scheduled run picks up the work, so a failed run is not retried. */
     public int $tries = 1;
 
-    public int $uniqueFor = 3600;
+    /** Raise queue retry_after above this, or a long run can be picked up twice. */
+    public int $timeout = 900;
+
+    /** A worker killed mid-run holds the lock only a little past its timeout. */
+    public int $uniqueFor = 960;
 
     public function __construct(
         public readonly bool $all = false,

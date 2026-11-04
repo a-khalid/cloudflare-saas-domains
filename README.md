@@ -61,6 +61,7 @@ CF_SAAS_BLOCKED_DOMAINS=your-saas.com,your-other-brand.com
 | `CF_SAAS_CNAME_TARGET` | fallback origin | What merchants point their CNAME at |
 | `CF_SAAS_POLLING_INTERVAL` | `300` | Minimum seconds between checks of one domain |
 | `CF_SAAS_TABLE` | `tenant_domains` | Table name |
+| `CF_SAAS_DB_CONNECTION` | default at boot | Connection for that table |
 | `CF_SAAS_TENANT_MODEL` | any model | Restrict domain owners to this class |
 | `CF_SAAS_TENANT_KEY_TYPE` | `int` | `int`, `uuid`, `ulid` or `string`, read by the migration |
 | `CF_SAAS_SSL_METHOD` | `txt` | `txt`, `http` or `email` |
@@ -111,7 +112,7 @@ Schedule::command('cf-domains:sync')->everyFiveMinutes()->withoutOverlapping();
 Schedule::command('cf-domains:sync --all')->daily()->withoutOverlapping();
 ```
 
-`--queue` dispatches `SyncDomainsJob` instead of running inline, and `--limit=` caps a run. The command exits non-zero if a domain could not be checked.
+`--queue` dispatches `SyncDomainsJob` instead of running inline, and skips it if one is already waiting. The job's timeout is 900 seconds, so give its queue connection a higher `retry_after`, or lower `CF_SAAS_SYNC_BATCH_SIZE`. `--limit=` caps a run. The command exits non-zero if a domain could not be checked.
 
 ### What `add` guarantees
 
@@ -120,6 +121,7 @@ Schedule::command('cf-domains:sync --all')->daily()->withoutOverlapping();
 - Adding a hostname the tenant already has returns the existing domain, with no API call and no event.
 - A hostname held by another tenant throws `DomainAlreadyClaimedException`.
 - If Cloudflare fails, the local claim is released, so you can simply try again.
+- A hostname that was removed, or that Cloudflare deleted, is free for any tenant to claim. So is a claim abandoned by a crashed process, after 15 minutes.
 - If an earlier attempt reached Cloudflare but its response was lost, the existing hostname on your zone is adopted.
 
 ## DNS instructions
@@ -149,7 +151,7 @@ TXT   _acme-challenge.shop.merchant.com     810b7d5f01154524b961ba0cd578acc2    
 | Certificate past validation, or HTTP validation in use | Nothing beyond any record above that is still unmet |
 | Live | Empty, and `$instructions->complete` is `true` |
 
-Cloudflare generates certificate tokens asynchronously, so they may be missing just after creation. When `$instructions->awaitingValidationRecords` is `true`, refresh the domain and ask again. `optional()` lists DCV delegation records when Cloudflare provides them. `toArray()` and `json_encode()` both work for API responses.
+Cloudflare generates certificate tokens asynchronously, so they may be missing just after creation. When `$instructions->awaitingValidationRecords` is `true`, refresh the domain and ask again. When `retryRequired` is `true`, validation failed: once DNS is fixed, call `retryValidation()`. When `hostnameGone` is `true`, Cloudflare no longer has the hostname, so `records` is empty and the domain has to be added again. `optional()` lists DCV delegation records when Cloudflare provides them. `toArray()` and `json_encode()` both work for API responses.
 
 The CNAME must stay in place for as long as the domain is connected. The ownership TXT can be removed once the hostname is active. Renewals can bring new certificate tokens, which `required()` shows when a sync sees them.
 
@@ -187,7 +189,7 @@ If you use Laravel's `TrustHosts` middleware, merchant domains need to pass it.
 
 ## stancl/tenancy
 
-Nothing to configure. When `stancl/tenancy` is installed, the middleware calls `tenancy()->initialize($tenant)` for tenants that implement its `Tenant` contract. Other tenant models are left alone. Set `CF_SAAS_STANCL_TENANCY=false` to turn this off.
+Nothing to configure. When `stancl/tenancy` is installed, the middleware calls `tenancy()->initialize($tenant)` for tenants that implement its `Tenant` contract. Other tenant models are left alone. The `tenant_domains` table stays on the connection that was the default at boot, so it keeps working after tenancy switches to a tenant database. Set `CF_SAAS_STANCL_TENANCY=false` to turn this off.
 
 ## Testing with fakes
 
@@ -244,6 +246,7 @@ During a sync, one failing domain is logged and the run continues, a rate limit 
 - **Not yet verified against the live API.** The client is built from Cloudflare's current documentation and tested with `Http::fake()`. Run the [live smoke test](CONTRIBUTING.md#live-smoke-test) on a test zone before relying on it in production.
 - **Apex domains need Cloudflare's help.** `merchant.com` can't use a CNAME in standard DNS, so it needs [Apex Proxying](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/start/advanced-settings/apex-proxying/) or BYOIP, which are limited to certain plans and cost extra. Apex domains are blocked by default. `CF_SAAS_ALLOW_APEX=true` lets them through, but `DnsInstructions` still shows a CNAME: you need to tell those merchants your A records yourself.
 - **Apex detection is approximate.** It uses a built-in list of common suffixes such as `co.uk` and `com.sa`, not the full Public Suffix List. An unlisted suffix can let an apex through as if it were a subdomain. Add suffixes in `validation.public_suffixes`.
+- **A brief cache race.** A request that read a domain just as it was removed can write its result back after the invalidation. That host then keeps resolving until `CF_SAAS_CACHE_TTL` (300 seconds by default). Lower the TTL if that matters to you.
 - **Polling only.** Status changes appear on your next sync, not instantly. Live domains are only re-checked with `--all`.
 - **Renewal behavior is an assumption.** The docs do not describe `ssl.status` during renewal. So a store doesn't go dark, a domain keeps resolving through renewal-looking states while its stored certificate expiry is in the future. See `PLAN.md`, assumption 6.
 - **Duplicate detection is by message.** Cloudflare documents no error code for it. See `PLAN.md`, assumption 1.

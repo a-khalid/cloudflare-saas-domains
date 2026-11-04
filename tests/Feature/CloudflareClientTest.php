@@ -246,18 +246,28 @@ it('gives up after the configured retries and throws', function () {
     Sleep::assertSleptTimes(3);
 });
 
-it('honors Retry-After on a 429, capped at the maximum delay', function () {
+it('honors Retry-After on a 429', function () {
     Http::fake(['*' => Http::sequence()
         ->push(errorEnvelope(1, 'busy'), 429, ['Retry-After' => '2'])
-        ->push(errorEnvelope(1, 'busy'), 429, ['Retry-After' => '3600'])
         ->push(envelope(hostnamePayload()))]);
 
     $this->client->getHostname('cf-id-1');
 
-    Sleep::assertSequence([
-        Sleep::for(2000)->milliseconds(),
-        Sleep::for(10000)->milliseconds(),
-    ]);
+    Sleep::assertSequence([Sleep::for(2000)->milliseconds()]);
+});
+
+it('stops retrying when Retry-After is longer than it will wait', function () {
+    Http::fake(['*' => Http::response(errorEnvelope(1, 'busy'), 429, ['Retry-After' => '3600'])]);
+
+    try {
+        $this->client->getHostname('cf-id-1');
+        $this->fail('Expected an exception.');
+    } catch (RateLimitedException $exception) {
+        expect($exception->retryAfterSeconds)->toBe(3600);
+    }
+
+    Http::assertSentCount(1);
+    Sleep::assertNeverSlept();
 });
 
 it('exposes Retry-After once retries are exhausted', function () {

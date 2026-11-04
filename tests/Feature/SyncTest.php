@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Sleep;
 use YourVendor\CloudflareSaasDomains\Events\DomainVerified;
 use YourVendor\CloudflareSaasDomains\Exceptions\AuthenticationFailedException;
@@ -163,6 +164,15 @@ it('dispatches a queued job with --queue', function () {
     $this->artisan('cf-domains:sync --queue --all --limit=5')->assertSuccessful();
 
     Bus::assertDispatched(SyncDomainsJob::class, fn (SyncDomainsJob $job) => $job->all && $job->limit === 5 && $job->queue === 'domains');
+});
+
+it('does not stack queued jobs when the command runs repeatedly', function () {
+    Queue::fake();
+
+    $this->artisan('cf-domains:sync --queue')->assertSuccessful();
+    $this->artisan('cf-domains:sync --queue')->assertSuccessful();
+
+    Queue::assertPushed(SyncDomainsJob::class, 1);
 });
 
 it('runs the sync from the queued job', function () {

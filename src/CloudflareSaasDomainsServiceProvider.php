@@ -77,11 +77,17 @@ final class CloudflareSaasDomainsServiceProvider extends ServiceProvider
         });
 
         $this->app->scoped(CurrentTenant::class);
-        $this->app->singleton(CloudflareSaasDomainsManager::class);
+        $this->app->scoped(CloudflareSaasDomainsManager::class);
     }
 
     public function boot(): void
     {
+        $config = $this->app->make(Config::class);
+
+        if (! $config->get(self::CONFIG.'.connection')) {
+            $config->set(self::CONFIG.'.connection', $config->get('database.default'));
+        }
+
         $this->publishes([
             __DIR__.'/../config/cloudflare-saas-domains.php' => $this->app->configPath('cloudflare-saas-domains.php'),
         ], self::CONFIG.'-config');

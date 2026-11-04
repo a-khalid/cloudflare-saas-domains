@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace YourVendor\CloudflareSaasDomains\Actions;
 
 use Illuminate\Contracts\Config\Repository as Config;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Support\Carbon;
 use Throwable;
 use YourVendor\CloudflareSaasDomains\Contracts\CustomHostnameClient;
 use YourVendor\CloudflareSaasDomains\Data\CustomHostname;
 use YourVendor\CloudflareSaasDomains\Data\SslOptions;
+use YourVendor\CloudflareSaasDomains\Enums\HostnameStatus;
 use YourVendor\CloudflareSaasDomains\Events\DomainAdded;
 use YourVendor\CloudflareSaasDomains\Exceptions\ApexDomainNotAllowedException;
 use YourVendor\CloudflareSaasDomains\Exceptions\BlockedHostnameException;
@@ -25,6 +28,9 @@ use YourVendor\CloudflareSaasDomains\Validation\HostnameValidator;
 
 final class AddDomain
 {
+    /** Longer than any single attempt can take, retries included. */
+    private const ABANDONED_CLAIM_MINUTES = 15;
+
     public function __construct(
         private readonly CustomHostnameClient $client,
         private readonly HostnameValidator $validator,
@@ -58,13 +64,14 @@ final class AddDomain
         try {
             $remote = $this->createOrAdopt($hostname);
         } catch (Throwable $exception) {
-            match ($rollback) {
-                'force_delete' => $domain->forceDelete(),
-                'trash' => $domain->delete(),
-                default => null,
-            };
+            $this->release($domain, $rollback);
 
             throw $exception;
+        }
+
+        // A concurrent request for the same hostname may have failed and released the row.
+        if (! TenantDomain::query()->whereKey($domain->getKey())->exists()) {
+            [$domain] = $this->claim($tenant, $hostname);
         }
 
         return $this->transitioner->apply($domain, $remote, [new DomainAdded($domain)]);
@@ -84,7 +91,8 @@ final class AddDomain
     }
 
     /**
-     * Takes the hostname locally first. The unique index settles concurrent requests.
+     * Takes the hostname locally first. The unique index settles concurrent inserts,
+     * and reclaim() settles concurrent takeovers of an existing row.
      *
      * @return array{TenantDomain, 'force_delete'|'trash'|null} The domain, and how to undo a new claim if Cloudflare fails.
      */
@@ -104,9 +112,39 @@ final class AddDomain
             }
         }
 
-        if ($existing->trashed()) {
-            $existing->tenant()->associate($tenant);
-            $existing->fill([
+        if ($this->reclaim($existing, $tenant)) {
+            return [$existing->refresh(), 'trash'];
+        }
+
+        $existing->refresh();
+
+        if (! $this->belongsTo($existing, $tenant)) {
+            throw new DomainAlreadyClaimedException("\"{$hostname}\" is already connected to another tenant.");
+        }
+
+        return [$existing, null];
+    }
+
+    /**
+     * A row nobody holds any more can be taken by anyone: it was removed, Cloudflare
+     * deleted the hostname, or a process died before it got a Cloudflare id. The
+     * conditional update means only one concurrent caller can win.
+     */
+    private function reclaim(TenantDomain $domain, Model $tenant): bool
+    {
+        $taken = TenantDomain::withTrashed()
+            ->whereKey($domain->getKey())
+            ->where(static function (Builder $query): void {
+                $query->whereNotNull('deleted_at')
+                    ->orWhere('hostname_status', HostnameStatus::Deleted->value)
+                    ->orWhere(static function (Builder $query): void {
+                        $query->whereNull('cloudflare_id')
+                            ->where('updated_at', '<=', Carbon::now()->subMinutes(self::ABANDONED_CLAIM_MINUTES));
+                    });
+            })
+            ->update([
+                'tenant_type' => $tenant->getMorphClass(),
+                'tenant_id' => $tenant->getKey(),
                 'cloudflare_id' => null,
                 'hostname_status' => null,
                 'ssl_status' => null,
@@ -115,17 +153,27 @@ final class AddDomain
                 'last_checked_at' => null,
                 'verified_at' => null,
                 'failure_reason' => null,
+                'deleted_at' => null,
             ]);
-            $existing->restore();
 
-            return [$existing, 'trash'];
-        }
+        return $taken === 1;
+    }
 
-        if (! $this->belongsTo($existing, $tenant)) {
-            throw new DomainAlreadyClaimedException("\"{$hostname}\" is already connected to another tenant.");
-        }
+    /**
+     * Undoes a claim after Cloudflare failed, unless a concurrent request for the same
+     * hostname has since connected it.
+     *
+     * @param  'force_delete'|'trash'|null  $rollback
+     */
+    private function release(TenantDomain $domain, ?string $rollback): void
+    {
+        $unprovisioned = TenantDomain::query()->whereKey($domain->getKey())->whereNull('cloudflare_id');
 
-        return [$existing, null];
+        match ($rollback) {
+            'force_delete' => $unprovisioned->forceDelete(),
+            'trash' => $unprovisioned->delete(),
+            default => null,
+        };
     }
 
     private function belongsTo(TenantDomain $domain, Model $tenant): bool
@@ -148,7 +196,13 @@ final class AddDomain
         try {
             return $this->client->createHostname($hostname, SslOptions::fromConfig(is_array($ssl) ? $ssl : []));
         } catch (DuplicateHostnameException $exception) {
-            return $this->client->findByHostname($hostname) ?? throw $exception;
+            $found = $this->client->findByHostname($hostname);
+
+            if ($found === null || in_array($found->status, [HostnameStatus::PendingDeletion, HostnameStatus::Deleted], true)) {
+                throw $exception;
+            }
+
+            return $found;
         }
     }
 }

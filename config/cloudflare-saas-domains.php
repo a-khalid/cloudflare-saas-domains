@@ -63,6 +63,10 @@ return [
 
     'table' => env('CF_SAAS_TABLE', 'tenant_domains'),
 
+    // Null pins the default connection at boot, so the table stays reachable after
+    // stancl/tenancy switches the default connection to a tenant database.
+    'connection' => env('CF_SAAS_DB_CONNECTION'),
+
     'tenant_model' => env('CF_SAAS_TENANT_MODEL'),
 
     'tenant_key_type' => env('CF_SAAS_TENANT_KEY_TYPE', 'int'),

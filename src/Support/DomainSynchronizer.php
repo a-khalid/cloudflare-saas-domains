@@ -38,7 +38,7 @@ final class DomainSynchronizer
         $query = TenantDomain::query()
             ->whereNotNull('cloudflare_id')
             ->dueForCheck($this->intConfig('polling_interval', 300))
-            ->orderByRaw('last_checked_at IS NOT NULL')
+            ->orderByRaw('CASE WHEN last_checked_at IS NULL THEN 0 ELSE 1 END')
             ->orderBy('last_checked_at')
             ->orderBy('id')
             ->limit($limit ?? $this->intConfig('sync.batch_size', 500));

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace YourVendor\CloudflareSaasDomains\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Contracts\Config\Repository as Config;
 use YourVendor\CloudflareSaasDomains\Exceptions\CloudflareSaasDomainsException;
 use YourVendor\CloudflareSaasDomains\Jobs\SyncDomainsJob;
@@ -20,22 +19,24 @@ final class SyncDomainsCommand extends Command
 
     protected $description = 'Refresh custom domain statuses from Cloudflare';
 
-    public function handle(DomainSynchronizer $synchronizer, Dispatcher $bus, Config $config): int
+    public function handle(DomainSynchronizer $synchronizer, Config $config): int
     {
         $all = (bool) $this->option('all');
         $limitOption = $this->option('limit');
         $limit = is_numeric($limitOption) ? (int) $limitOption : null;
 
         if ($this->option('queue')) {
-            $job = new SyncDomainsJob($all, $limit);
+            // SyncDomainsJob::dispatch() is what honors ShouldBeUnique. The bus alone would stack jobs.
+            $pending = SyncDomainsJob::dispatch($all, $limit);
             $queue = $config->get('cloudflare-saas-domains.sync.queue');
 
             if (is_string($queue) && $queue !== '') {
-                $job->onQueue($queue);
+                $pending->onQueue($queue);
             }
 
-            $bus->dispatch($job);
-            $this->components->info('Domain sync dispatched.');
+            unset($pending);
+
+            $this->components->info('Domain sync queued, unless one is already waiting.');
 
             return self::SUCCESS;
         }
