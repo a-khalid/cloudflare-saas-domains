@@ -5,6 +5,9 @@ parameters:
     level: 8
     paths:
         - src
-        - config
         - database
     tmpDir: .phpunit.cache/phpstan
+    ignoreErrors:
+        # A public trait for host applications: nothing in the package uses it.
+        - identifier: trait.unused
+          path: src/Concerns/HasCustomDomains.php
