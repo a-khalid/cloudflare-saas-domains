@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use AKhalid\CloudflareSaasDomains\Events\DomainAdded;
 use AKhalid\CloudflareSaasDomains\Events\DomainFailed;
+use AKhalid\CloudflareSaasDomains\Events\SslActivated;
 use AKhalid\CloudflareSaasDomains\Exceptions\DomainAlreadyClaimedException;
 use AKhalid\CloudflareSaasDomains\Exceptions\DuplicateHostnameException;
 use AKhalid\CloudflareSaasDomains\Exceptions\ServerErrorException;
@@ -274,5 +275,66 @@ describe('DNS instructions in terminal states', function () {
 
     it('needs no retry on a healthy domain', function () {
         expect(CloudflareSaasDomains::instructions(domainFor(merchant()))->retryRequired)->toBeFalse();
+    });
+});
+
+describe('telling a renewal from a first issue', function () {
+    /** Each pair is one poll's hostname and SSL status. */
+    function sslPolls(TenantDomain $domain, array $polls): void
+    {
+        $sequence = Http::sequence();
+
+        foreach ($polls as [$hostname, $ssl]) {
+            $sequence->push(envelope(hostnamePayload(['status' => $hostname], ['status' => $ssl])));
+        }
+
+        Http::fake(['*' => $sequence]);
+
+        foreach ($polls as $poll) {
+            CloudflareSaasDomains::refresh($domain);
+        }
+    }
+
+    beforeEach(fn () => Event::fake([SslActivated::class]));
+
+    it('is not a renewal when the certificate follows the hostname', function () {
+        $domain = domainFor(merchant());
+        sslPolls($domain, [['active', 'pending_validation'], ['active', 'active']]);
+
+        Event::assertDispatchedTimes(SslActivated::class, 1);
+        Event::assertDispatched(SslActivated::class, fn (SslActivated $event) => ! $event->isRenewal);
+    });
+
+    it('is not a renewal when the certificate comes first', function () {
+        sslPolls(domainFor(merchant()), [['pending', 'active']]);
+
+        Event::assertDispatched(SslActivated::class, fn (SslActivated $event) => ! $event->isRenewal);
+    });
+
+    it('is not a renewal when a first issue already reports an expiry', function () {
+        Http::fake(['*' => Http::response(envelope(hostnamePayload(['status' => 'active'], ['status' => 'active', 'expires_on' => '2030-01-01T00:00:00Z'])))]);
+        $domain = domainFor(merchant(), ['ssl_expires_at' => now()->addYear()]);
+
+        CloudflareSaasDomains::refresh($domain);
+
+        Event::assertDispatched(SslActivated::class, fn (SslActivated $event) => ! $event->isRenewal);
+    });
+
+    it('is a renewal when a certificate returns to active', function () {
+        $domain = domainFor(merchant());
+        sslPolls($domain, [['active', 'active'], ['active', 'pending_validation'], ['active', 'active']]);
+
+        Event::assertDispatchedTimes(SslActivated::class, 2);
+        Event::assertDispatched(SslActivated::class, fn (SslActivated $event) => $event->isRenewal);
+    });
+
+    it('starts over when a hostname is claimed again', function () {
+        $domain = domainFor(merchant('Old'), ['ssl_activated_at' => now()->subYear()]);
+        $domain->delete();
+        Http::fake(['*' => Http::response(envelope(hostnamePayload(['status' => 'active'], ['status' => 'active'])))]);
+
+        CloudflareSaasDomains::add(merchant('New'), 'shop.acme.com');
+
+        Event::assertDispatched(SslActivated::class, fn (SslActivated $event) => ! $event->isRenewal);
     });
 });

@@ -74,7 +74,7 @@ final class DomainStateTransitioner
             $wasActive = $domain->hostnameState()->isActive();
             $wasServing = $domain->sslState()->isServing();
             $wasFailed = $domain->isFailed();
-            $wasVerifiedBefore = $domain->verified_at !== null;
+            $hadCertificate = $domain->ssl_activated_at !== null;
             $previousSsl = $domain->ssl_status;
 
             $mutate($domain);
@@ -93,7 +93,8 @@ final class DomainStateTransitioner
             }
 
             if (! $wasServing && $domain->sslState()->isServing()) {
-                $events[] = new SslActivated($domain, $previousSsl, $wasVerifiedBefore);
+                $domain->ssl_activated_at ??= Carbon::now();
+                $events[] = new SslActivated($domain, $previousSsl, $hadCertificate);
             }
 
             if (! $wasFailed && $domain->isFailed()) {

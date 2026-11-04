@@ -9,8 +9,8 @@ use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 
 /**
- * The certificate moved into a serving state. $wasVerifiedBefore is true when the
- * hostname had already been verified, which helps tell a renewal from a first issue.
+ * The certificate moved into a serving state. $isRenewal is true when a certificate
+ * had already served on this domain, and false on the first issue.
  */
 final class SslActivated implements ShouldDispatchAfterCommit
 {
@@ -19,6 +19,6 @@ final class SslActivated implements ShouldDispatchAfterCommit
     public function __construct(
         public readonly TenantDomain $domain,
         public readonly ?string $previousSslStatus = null,
-        public readonly bool $wasVerifiedBefore = false,
+        public readonly bool $isRenewal = false,
     ) {}
 }

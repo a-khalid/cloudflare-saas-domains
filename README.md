@@ -176,11 +176,11 @@ The CNAME must stay in place for as long as the domain is connected. The ownersh
 |---|---|---|
 | `DomainAdded` | The hostname is created on Cloudflare for this tenant | `domain` |
 | `DomainVerified` | The hostname status moves into an active state | `domain` |
-| `SslActivated` | The certificate moves into a serving state | `domain`, `previousSslStatus`, `wasVerifiedBefore` |
+| `SslActivated` | The certificate moves into a serving state | `domain`, `previousSslStatus`, `isRenewal` |
 | `DomainFailed` | The hostname or certificate moves into a failed state | `domain`, `reason` |
 | `DomainRemoved` | The domain is removed | `domain` |
 
-They live in `AKhalid\CloudflareSaasDomains\Events`, and fire only on a transition, never on an unchanged poll. A domain that fails, recovers and fails again fires `DomainFailed` twice. `SslActivated` also fires when a certificate returns to a serving state after a renewal.
+They live in `AKhalid\CloudflareSaasDomains\Events`, and fire only on a transition, never on an unchanged poll. A domain that fails, recovers and fails again fires `DomainFailed` twice. `SslActivated` also fires when a certificate returns to a serving state after a renewal, with `isRenewal` set to `true`.
 
 `failure_reason` also carries Cloudflare's current message while a domain is merely pending, such as "custom hostname does not CNAME to this zone". That is normal until the merchant finishes DNS and does not fire `DomainFailed`.
 

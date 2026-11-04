@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('ssl_status', 32)->nullable()->index();
             $table->json('verification_records')->nullable();
             $table->timestamp('ssl_expires_at')->nullable();
+            $table->timestamp('ssl_activated_at')->nullable();
             $table->timestamp('last_checked_at')->nullable()->index();
             $table->timestamp('verified_at')->nullable();
             $table->text('failure_reason')->nullable();

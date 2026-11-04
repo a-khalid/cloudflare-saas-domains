@@ -150,6 +150,7 @@ final class AddDomain
                 'ssl_status' => null,
                 'verification_records' => null,
                 'ssl_expires_at' => null,
+                'ssl_activated_at' => null,
                 'last_checked_at' => null,
                 'verified_at' => null,
                 'failure_reason' => null,

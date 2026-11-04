@@ -25,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $ssl_status
  * @property array<string, mixed>|null $verification_records
  * @property Carbon|null $ssl_expires_at
+ * @property Carbon|null $ssl_activated_at
  * @property Carbon|null $last_checked_at
  * @property Carbon|null $verified_at
  * @property string|null $failure_reason
@@ -47,6 +48,7 @@ class TenantDomain extends Model
     protected $casts = [
         'verification_records' => 'array',
         'ssl_expires_at' => 'datetime',
+        'ssl_activated_at' => 'datetime',
         'last_checked_at' => 'datetime',
         'verified_at' => 'datetime',
     ];

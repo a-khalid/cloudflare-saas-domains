@@ -66,7 +66,7 @@ it('fires SslActivated exactly once when the certificate becomes active', functi
 
     Event::assertNotDispatched(DomainVerified::class);
     Event::assertDispatchedTimes(SslActivated::class, 1);
-    Event::assertDispatched(SslActivated::class, fn (SslActivated $event) => $event->previousSslStatus === 'pending_validation' && $event->wasVerifiedBefore);
+    Event::assertDispatched(SslActivated::class, fn (SslActivated $event) => $event->previousSslStatus === 'pending_validation' && ! $event->isRenewal);
 });
 
 it('treats active_redeploying as already active', function () {
