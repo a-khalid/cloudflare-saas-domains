@@ -6,8 +6,6 @@
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
 /CONTRIBUTING.md    export-ignore
-/PLAN.md            export-ignore
 /phpstan.neon.dist  export-ignore
 /phpunit.xml.dist   export-ignore
 /pint.json          export-ignore
-/sandbox-demo.sh    export-ignore

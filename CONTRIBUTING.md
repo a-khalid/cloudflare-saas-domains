@@ -29,7 +29,7 @@ All three run in CI across the supported PHP and Laravel versions. Run `composer
 - Add or update tests for every behavior change. `composer test:coverage` needs Xdebug or PCOV and enforces 90%.
 - Tests must not touch the network. Use `Http::fake()` for client behavior and `CloudflareSaasDomains::fake()` for flows.
 - Update `CHANGELOG.md` under `[Unreleased]`.
-- Check Cloudflare behavior against [the current API docs](https://developers.cloudflare.com/api/resources/custom_hostnames/). If the docs leave something open, choose the safest reading and record it in `PLAN.md` under "Assumptions".
+- Check Cloudflare behavior against [the current API docs](https://developers.cloudflare.com/api/resources/custom_hostnames/). If the docs leave something open, choose the safest reading and record it under "Assumptions" in the README.
 
 ## Conventions
 
@@ -47,7 +47,3 @@ CF_LIVE_TEST=1 vendor/bin/pest tests/Live
 ```
 
 Never commit credentials. `.env.testing` is ignored by git.
-
-## End-to-end demo
-
-`./sandbox-demo.sh` builds a throwaway Laravel app in `../cf-domains-sandbox`, installs the package through a path repository, and runs a full domain lifecycle against the fake. It deletes and recreates that directory.

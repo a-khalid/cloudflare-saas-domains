@@ -46,7 +46,7 @@ enum SslStatus: string
 
     /**
      * States a certificate can pass through while being renewed. Only meaningful
-     * together with a known expiry in the future. See PLAN.md, assumption 6.
+     * together with a known expiry in the future. See assumption 6 in the README.
      */
     public function isRenewing(): bool
     {

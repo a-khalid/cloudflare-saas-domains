@@ -268,7 +268,7 @@ final class CloudflareClient implements CustomHostnameClient
     }
 
     /**
-     * Cloudflare documents no numeric code for this. See PLAN.md, assumption 1.
+     * Cloudflare documents no numeric code for this. See assumption 1 in the README.
      *
      * @param  list<ApiError>  $errors
      */

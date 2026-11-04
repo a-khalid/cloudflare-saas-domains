@@ -263,16 +263,33 @@ During a sync, one failing domain is logged and the run continues, a rate limit 
 - **Apex detection is approximate.** It uses a built-in list of common suffixes such as `co.uk` and `com.sa`, not the full Public Suffix List. An unlisted suffix can let an apex through as if it were a subdomain. Add suffixes in `validation.public_suffixes`.
 - **A brief cache race.** A request that read a domain just as it was removed can write its result back after the invalidation. That host then keeps resolving until `CF_SAAS_CACHE_TTL` (300 seconds by default). Lower the TTL if that matters to you.
 - **Polling only.** Status changes appear on your next sync, not instantly. Live domains are only re-checked with `--all`.
-- **Renewal behavior is an assumption.** The docs do not describe `ssl.status` during renewal. So a store doesn't go dark, a domain keeps resolving through renewal-looking states while its stored certificate expiry is in the future. See `PLAN.md`, assumption 6.
-- **Duplicate detection is by message.** Cloudflare documents no error code for it. See `PLAN.md`, assumption 1.
+- **Renewal behavior is an assumption.** The docs do not describe `ssl.status` during renewal. So a store doesn't go dark, a domain keeps resolving through renewal-looking states while its stored certificate expiry is in the future. See [assumption 6](#assumptions).
+- **Duplicate detection is by message.** Cloudflare documents no error code for it. See [assumption 1](#assumptions).
 - **Cloudflare-to-Cloudflare hostnames.** Cloudflare doesn't support pre-validation when the merchant's own zone is also on Cloudflare. The ownership TXT won't help them, and they need the CNAME in place.
 - **Not covered yet:** wildcard hostnames, custom certificates, per-hostname `custom_origin_server`, and custom metadata through `add()` (the client supports metadata).
 - **Retries block.** A retried call can wait several seconds in the current process, which matters in a web request. Lower `CF_SAAS_HTTP_RETRIES` if needed, or call `add` from a job.
 - **Laravel 10 and 11 are end of life.** They work, but Composer blocks them by default. See [Laravel 10 and 11](#laravel-10-and-11).
 
+## Assumptions
+
+Cloudflare's docs do not settle these, so the package takes the safest reading. Please open an issue if the live API behaves differently.
+
+1. **Duplicate errors.** No numeric duplicate-hostname code is documented. A response counts as a duplicate when it is HTTP 409 or an error message contains "duplicate" or "already exists". Adoption requires an exact hostname match in our own zone, checked client-side too.
+2. **Re-validation body.** Docs say to send an `ssl` object with the same `method` and `type`, and elsewhere "the same values as your initial POST", while the Edit example has no `ssl` at all. `RetryValidation` GETs the current hostname and PATCHes its `method`, `type`, `bundle_method`, `certificate_authority` and `wildcard`, falling back to configured defaults if Cloudflare returned no `ssl`.
+3. **Retrying non-idempotent calls.** POST is retried on 429/5xx/connection errors. A duplicate from a lost response is handled by adoption (1), and a DELETE retried into 404 counts as already removed.
+4. **Failed states are not documented as such.** Treated as failed: hostname `moved, deleted, blocked, pending_blocked, test_blocked, test_failed`; SSL `*_timed_out, expired, deleted`. `pending_deletion`, `inactive` and unknown values are not failures on their own.
+5. **Active states.** Hostname active means `active` or `active_redeploying`. `provisioned` and `test_*` are not mapped by the docs and count as not active.
+6. **Certificate renewal.** Docs do not say how `ssl.status` behaves during renewal. To avoid taking a live store down, `pending_expiration` counts as serving, and renewal-looking states (`pending_validation, pending_issuance, pending_deployment, holding_deployment, backup_issued`) still resolve while the stored `ssl.expires_on` is in the future. The hostname must be active in every case, and Cloudflare's edge is still what terminates TLS.
+7. **`hostname.exact` query parameter** uses the dotted form the List docs name.
+8. **A 404 while polling** means Cloudflare no longer has the hostname: it is marked `deleted`, `DomainFailed` fires once, and polling stops. It is not raised as an exception, so one lost domain cannot break a sync run.
+9. **Ownership TXT is shown as required until the hostname is active.** A live CNAME alone can validate it, but adding the TXT is harmless and avoids a second round with the merchant.
+10. **Delegated DCV.** The docs describe getting the target from the dashboard, while the API schema exposes `ssl.dcv_delegation_records`. They are surfaced only as optional records, when both `cname` and `cname_target` are present.
+11. **Apex detection** uses a label count plus a curated multi-part suffix list (extendable in config), not the full Public Suffix List. It can miss unusual suffixes, which is listed as a limitation.
+12. **HTTP and email DCV** produce no DNS records for the merchant, because HTTP DCV needs only the CNAME. Records for them stay readable in `verification_records`.
+
 ## Development
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Design notes and assumptions are in [PLAN.md](PLAN.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
