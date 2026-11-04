@@ -89,7 +89,7 @@ final class FakeCustomHostnameClient implements CustomHostnameClient
         $this->throwPendingFailure();
 
         $payload = $this->payload($id);
-        $this->revalidated[] = (string) $payload['hostname'];
+        $this->revalidated[] = CustomHostname::fromArray($payload)->hostname;
 
         return CustomHostname::fromArray($payload);
     }
@@ -98,7 +98,7 @@ final class FakeCustomHostnameClient implements CustomHostnameClient
     {
         $this->throwPendingFailure();
 
-        $this->deleted[] = (string) $this->payload($id)['hostname'];
+        $this->deleted[] = CustomHostname::fromArray($this->payload($id))->hostname;
 
         unset($this->hostnames[$id]);
     }

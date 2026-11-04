@@ -13,9 +13,14 @@ final class TenantDomainObserver implements ShouldHandleEventsAfterCommit
 {
     public function __construct(private readonly TenantResolver $resolver) {}
 
-    public function saved(TenantDomain $domain): void
+    public function created(TenantDomain $domain): void
     {
-        if ($domain->wasRecentlyCreated || $domain->wasChanged([
+        $this->resolver->forget($domain->hostname);
+    }
+
+    public function updated(TenantDomain $domain): void
+    {
+        if ($domain->wasChanged([
             'hostname', 'hostname_status', 'ssl_status', 'ssl_expires_at', 'tenant_type', 'tenant_id', 'deleted_at',
         ])) {
             $this->resolver->forget($domain->hostname);

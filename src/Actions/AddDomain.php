@@ -121,11 +121,20 @@ final class AddDomain
             return [$existing, 'trash'];
         }
 
-        if ((string) $existing->tenant_id !== (string) $tenant->getKey() || $existing->tenant_type !== $tenant->getMorphClass()) {
+        if (! $this->belongsTo($existing, $tenant)) {
             throw new DomainAlreadyClaimedException("\"{$hostname}\" is already connected to another tenant.");
         }
 
         return [$existing, null];
+    }
+
+    private function belongsTo(TenantDomain $domain, Model $tenant): bool
+    {
+        $key = $tenant->getKey();
+
+        return $domain->tenant_type === $tenant->getMorphClass()
+            && is_scalar($key)
+            && (string) $domain->tenant_id === (string) $key;
     }
 
     /**
