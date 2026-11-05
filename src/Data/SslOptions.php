@@ -34,17 +34,16 @@ final readonly class SslOptions
     }
 
     /**
-     * Cloudflare re-checks validation when the PATCH matches the existing config,
-     * so this copies what the hostname already has.
+     * Cloudflare re-checks validation when the PATCH repeats the hostname's method
+     * and type. Nothing else is copied: the live API answers 400 (code 1459) to
+     * certificate_authority below the Enterprise plan, and sending wildcard moved an
+     * active hostname to active_redeploying.
      */
     public static function matching(SslDetails $details, self $defaults): self
     {
         return new self(
             method: $details->method ?? $defaults->method,
             type: $details->type ?? $defaults->type,
-            bundleMethod: $details->bundleMethod,
-            certificateAuthority: $details->certificateAuthority,
-            wildcard: $details->wildcard,
         );
     }
 

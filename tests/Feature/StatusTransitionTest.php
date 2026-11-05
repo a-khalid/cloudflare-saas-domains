@@ -210,19 +210,13 @@ it('stores the certificate expiry', function () {
     expect($domain->ssl_expires_at->year)->toBe(2030);
 });
 
-it('retries validation with the certificate settings Cloudflare holds', function () {
+it('retries validation with the method and type Cloudflare holds', function () {
     Http::fake(['*' => Http::response(envelope(hostnamePayload()))]);
     $domain = domainFor(merchant());
 
     CloudflareSaasDomains::retryValidation($domain);
 
-    Http::assertSent(fn (Request $request) => $request->method() === 'PATCH' && $request->data() === ['ssl' => [
-        'method' => 'txt',
-        'type' => 'dv',
-        'bundle_method' => 'ubiquitous',
-        'certificate_authority' => 'google',
-        'wildcard' => false,
-    ]]);
+    Http::assertSent(fn (Request $request) => $request->method() === 'PATCH' && $request->data() === ['ssl' => ['method' => 'txt', 'type' => 'dv']]);
 });
 
 it('falls back to configured defaults when Cloudflare returned no certificate', function () {

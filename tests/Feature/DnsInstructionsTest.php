@@ -33,6 +33,18 @@ it('asks for the CNAME, ownership TXT and SSL TXT on a new domain', function () 
         ->and($instructions->complete)->toBeFalse();
 });
 
+it('asks for every certificate token, even under one name', function () {
+    $instructions = CloudflareSaasDomains::instructions(domainFor(merchant(), [
+        'hostname_status' => 'active',
+        'verification_records' => storedRecords(['ssl_validation' => [
+            ['txt_name' => '_acme-challenge.shop.acme.com', 'txt_value' => 'token-one', 'status' => 'pending'],
+            ['txt_name' => '_acme-challenge.shop.acme.com', 'txt_value' => 'token-two', 'status' => 'pending'],
+        ]]),
+    ]));
+
+    expect(array_map(fn (DnsRecord $record) => $record->value, $instructions->required()))->toBe(['token-one', 'token-two']);
+});
+
 it('drops the ownership TXT once the hostname is active', function () {
     $instructions = CloudflareSaasDomains::instructions(domainFor(merchant(), [
         'hostname_status' => 'active',
