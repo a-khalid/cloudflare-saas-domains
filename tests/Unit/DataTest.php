@@ -117,16 +117,10 @@ it('sends only the SSL options that are set', function () {
         ->toBe(['method' => 'http', 'type' => 'dv', 'settings' => ['min_tls_version' => '1.2']]);
 });
 
-it('builds re-validation options from the existing certificate', function () {
-    $details = new SslDetails(SslStatus::PendingValidation, 'pending_validation', method: 'http', type: 'dv', bundleMethod: 'force', certificateAuthority: 'lets_encrypt', wildcard: false);
+it('re-validates with only the method and type of the existing certificate', function () {
+    $details = new SslDetails(SslStatus::PendingValidation, 'pending_validation', method: 'http', type: 'dv', bundleMethod: 'force', certificateAuthority: 'ssl_com', wildcard: false);
 
-    expect(SslOptions::matching($details, new SslOptions)->toArray())->toBe([
-        'method' => 'http',
-        'type' => 'dv',
-        'bundle_method' => 'force',
-        'certificate_authority' => 'lets_encrypt',
-        'wildcard' => false,
-    ]);
+    expect(SslOptions::matching($details, new SslOptions)->toArray())->toBe(['method' => 'http', 'type' => 'dv']);
 });
 
 it('drops empty fields when storing a validation record', function () {
